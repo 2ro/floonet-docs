@@ -67,7 +67,7 @@ enabled = true
 # upstream = "relay.yourdomain:443"              # your PUBLIC TLS endpoint
 ```
 
-When enabled, the relay runs the bundled `floonet-mixexit` beside itself: an ordinary unbonded mixnet client that forwards every accepted stream to **one fixed upstream** (your relay), never a caller-chosen target, so it is structurally not an open proxy. Point `upstream` at your public TLS endpoint so wallets get your real certificate through the mixnet; empty means this relay's local listener (no TLS). The exit's stable mixnet address is printed at startup and written to `<data_dir>/nym_address.txt`; publish it (the relay pool `exit` field) and back the directory up, since losing it rotates the address. See [The mixnet and the scoped exit](../concepts/nym.md).
+When enabled, the relay runs the bundled `floonet-mixexit` beside itself: an ordinary unbonded mixnet client that forwards every accepted stream to **one fixed upstream** (your relay), never a caller-chosen target, so it is structurally not an open proxy. Point `upstream` at your public TLS endpoint so wallets get your real certificate through the mixnet; empty means this relay's local listener (no TLS). The exit's stable mixnet address is printed at startup and written to `<data_dir>/nym_address.txt`; publish it (the [relay pool](https://gist.github.com/2ro/79cd885540c88d074fe52f8388a3e5b4) `exit` field) and back the directory up, since losing it rotates the address. See [The mixnet and the scoped exit](../concepts/nym.md).
 
 ## Environment
 

@@ -7,7 +7,7 @@
 One command brings up the whole unit: relay, name authority, and reverse proxy with automatic TLS.
 
 ```bash
-git clone <floonet-strfry repo>
+git clone https://github.com/2ro/floonet-strfry.git
 cd floonet-strfry
 cp .env.example .env      # edit: your domain, contact, and (optionally) prices
 docker compose up -d
@@ -34,7 +34,7 @@ COMPOSE_PROFILES=exit
 #FLOONET_EXIT_UPSTREAM=caddy:443
 ```
 
-then `docker compose up -d` again. The exit's stable mixnet address is printed at startup (`docker compose logs mixexit`) and written to `nym_address.txt` in the `mixexit-data` volume. Publish that address (the relay pool `exit` field) so wallets can dial your relay straight over the mixnet; they fall back to the public mixnet route automatically whenever the exit is down. Back the volume up: losing it rotates the address.
+then `docker compose up -d` again. The exit's stable mixnet address is printed at startup (`docker compose logs mixexit`) and written to `nym_address.txt` in the `mixexit-data` volume. Publish that address (the [relay pool](https://gist.github.com/2ro/79cd885540c88d074fe52f8388a3e5b4) `exit` field) so wallets can dial your relay straight over the mixnet; they fall back to the public mixnet route automatically whenever the exit is down. Back the volume up: losing it rotates the address.
 
 ## 2. apply-spec (build strfry yourself, add the Floonet layer)
 

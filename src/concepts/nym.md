@@ -18,7 +18,7 @@ A wallet on the mixnet still has to *leave* it somewhere to reach your relay. By
 Each Floonet package bundles `floonet-mixexit`: an ordinary, **unbonded** mixnet client (no bonding, no NYM tokens, no `nym-node`) that runs next to your relay and forwards every accepted mixnet stream to **one fixed upstream, your own relay**, never a caller-chosen target. That scoping is the whole design:
 
 - **It is structurally not an open proxy.** There is no exit policy to manage and no abuse surface: the exit can reach nothing but the relay it fronts.
-- **Wallets dial it by mixnet address alone.** The address is published in the wallet-side relay pool's `exit` field; a wallet that has it opens a mixnet stream straight to your machine, so the money path needs **no public DNS** and no shared public exit.
+- **Wallets dial it by mixnet address alone.** The address is published in the wallet-side [relay pool](https://gist.github.com/2ro/79cd885540c88d074fe52f8388a3e5b4)'s `exit` field (the Goblin pool is public: the live relays, each with its exit address); a wallet that has it opens a mixnet stream straight to your machine, so the money path needs **no public DNS** and no shared public exit.
 - **Anchor + fallback, never pin-only.** Wallets prefer the exit and fall back to the public mixnet route the moment it fails, so a dead exit costs seconds, never a lockout. Pinning a single route is deliberately impossible: it would recreate the single point of failure this design exists to kill.
 
 ### The fast money path
@@ -35,7 +35,7 @@ Co-locating an exit with the relay it fronts is deliberate, and safe, *because i
 
 ## Turning it on
 
-One toggle per package; the exit's stable mixnet address is printed at startup and written to `nym_address.txt` in its data volume or directory. Publish that address (for example in the Floonet relay pool's `exit` field) so wallets can prefer your exit, and back the data directory up: losing it rotates the address.
+One toggle per package; the exit's stable mixnet address is printed at startup and written to `nym_address.txt` in its data volume or directory. Publish that address (for example in the [Floonet relay pool](https://gist.github.com/2ro/79cd885540c88d074fe52f8388a3e5b4)'s `exit` field) so wallets can prefer your exit, and back the data directory up: losing it rotates the address.
 
 - **floonet-strfry**: set `COMPOSE_PROFILES=exit` in `.env`. See [Deploy floonet-strfry](../floonet-strfry/deploy.md#the-mixnet-exit).
 - **floonet-rs**: set `enabled = true` in the `[exit]` section of `config.toml`. See [Configuration (floonet-rs)](../floonet-rs/config.md#exit-the-co-located-mixnet-exit).
