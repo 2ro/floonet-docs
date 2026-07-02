@@ -1,0 +1,23 @@
+[book]
+title = "Floonet"
+description = "Floonet: hardened Nostr relays for the Grin community. Two packages, one whitelist, private by default, and anyone can run one."
+authors = ["The Floonet Developers"]
+language = "en"
+src = "src"
+
+[output.html]
+default-theme = "navy"
+preferred-dark-theme = "navy"
+no-section-label = false
+additional-css = ["floonet.css"]
+mathjax-support = false
+
+[output.html.search]
+enable = true
+limit-results = 25
+use-boolean-and = true
+boost-title = 2
+
+[output.html.fold]
+enable = true
+level = 1
