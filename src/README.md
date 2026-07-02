@@ -4,6 +4,8 @@
 
 A Floonet relay is an ordinary Nostr relay with strong opinions. It stores only the handful of event kinds the Grin ecosystem actually uses, it says nothing about payments in its public metadata, it welcomes connections arriving through the [Nym](https://nym.com) mixnet, and it ships hardened by default. Wallets like [Goblin](https://goblin.st) use Floonet relays to deliver gift-wrapped Grin payments and to resolve names like `alice`.
 
+The flagship relay, **`relay.floonet.dev`**, runs floonet-strfry with the [co-located mixnet exit](concepts/nym.md) enabled and is the Goblin wallet's default money-path relay: wallets dial it straight over the mixnet, with no public DNS on the payment path.
+
 ## The two packages
 
 Floonet ships as two relay packages. Both carry the same conventions; pick the one that fits how you like to operate.
@@ -13,12 +15,13 @@ Floonet ships as two relay packages. Both carry the same conventions; pick the o
 | **[floonet-strfry](floonet-strfry/deploy.md)** | [strfry](https://github.com/hoytech/strfry) (C++) | Stock strfry at a pinned ref plus a spec: a modular write-policy plugin, a bundled name authority, and a TLS proxy, deployed as one Docker Compose unit. |
 | **[floonet-rs](floonet-rs/deploy.md)** | [nostr-rs-relay](https://github.com/scsibug/nostr-rs-relay) (Rust) | A single binary with an installer and a hardened systemd unit. Policy lives in a composable admission module; the name authority and the GoblinPay payment processor are built in. |
 
-Both add the same four features, each configurable, optional, and modular:
+Both add the same five features, each configurable, optional, and modular:
 
 1. **An event-kind whitelist** (the keystone: default deny, see below).
 2. **Authentication**: NIP-42 plus pubkey whitelists.
 3. **Paid access and paid names** via [GoblinPay](floonet-strfry/paid-names.md) (Grin).
 4. **A name authority**: the NIP-05 service that maps names to keys.
+5. **A co-located mixnet exit**: a scoped forwarder wallets dial straight over the mixnet, so reaching your relay needs no public DNS. See [The mixnet and the scoped exit](concepts/nym.md).
 
 ## The whitelist keystone
 

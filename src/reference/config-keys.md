@@ -24,6 +24,13 @@ The keys an operator actually touches, across both packages. Package-specific pa
 
 The read side may also set `filterValidation.allowedKinds` to mirror the whitelist on subscriptions.
 
+Two compose-level `.env` keys control the [co-located mixnet exit](../concepts/nym.md):
+
+| Key | Default | Meaning |
+| --- | --- | --- |
+| `COMPOSE_PROFILES` | unset | `exit` runs the bundled `mixexit` service beside the relay. |
+| `FLOONET_EXIT_UPSTREAM` | `caddy:443` | Where the exit pipes streams; defaults to the stack's own TLS front. |
+
 ## floonet-rs (`config.toml`)
 
 | Key | Floonet default | Meaning |
@@ -39,3 +46,7 @@ The read side may also set `filterValidation.allowedKinds` to mirror the whiteli
 | `pay_to_relay.processor` | `GoblinPay` | Payment backend selection. |
 | `name_authority.enabled` | `true` | Serve the [name authority](../floonet-rs/name-authority.md) in-process. |
 | `name_authority.domain` | operator's domain | The NIP-05 domain names resolve under. |
+| `exit.enabled` | `false` | Run the bundled [co-located mixnet exit](../floonet-rs/config.md#exit-the-co-located-mixnet-exit). |
+| `exit.binary` | `/usr/local/bin/floonet-mixexit` | Path to the bundled exit binary. |
+| `exit.data_dir` | `/var/lib/floonet-rs/mixexit` | Persistent mixnet identity; holds `nym_address.txt`. Back it up. |
+| `exit.upstream` | unset (local listener) | Where the exit pipes streams; point it at your public TLS endpoint. |

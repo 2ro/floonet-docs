@@ -22,6 +22,20 @@ curl -H 'Accept: application/nostr+json' https://relay.yourdomain/   # NIP-11
 curl https://relay.yourdomain/api/v1/health                          # name authority
 ```
 
+### The mixnet exit
+
+The compose unit also carries the [co-located scoped mixnet exit](../concepts/nym.md), off by default behind the `exit` compose profile. To turn it on:
+
+```bash
+# in .env
+COMPOSE_PROFILES=exit
+# optional: where the exit pipes streams. Defaults to this stack's own
+# TLS front (caddy:443), so wallets get your real certificate.
+#FLOONET_EXIT_UPSTREAM=caddy:443
+```
+
+then `docker compose up -d` again. The exit's stable mixnet address is printed at startup (`docker compose logs mixexit`) and written to `nym_address.txt` in the `mixexit-data` volume. Publish that address (the relay pool `exit` field) so wallets can dial your relay straight over the mixnet; they fall back to the public mixnet route automatically whenever the exit is down. Back the volume up: losing it rotates the address.
+
 ## 2. apply-spec (build strfry yourself, add the Floonet layer)
 
 If you already run strfry or want it on bare metal, `deploy/strfry/apply-spec.sh` builds stock strfry at the pinned ref and lays the Floonet conf, plugin, and name authority on top:

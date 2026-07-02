@@ -57,6 +57,18 @@ domain = "relay.yourdomain"
 
 Serves the NIP-05 endpoints in-process. See [Name authority](name-authority.md).
 
+### `[exit]`: the co-located mixnet exit
+
+```toml
+[exit]
+enabled = true
+# binary = "/usr/local/bin/floonet-mixexit"      # the bundled exit binary
+# data_dir = "/var/lib/floonet-rs/mixexit"       # persistent mixnet identity
+# upstream = "relay.yourdomain:443"              # your PUBLIC TLS endpoint
+```
+
+When enabled, the relay runs the bundled `floonet-mixexit` beside itself: an ordinary unbonded mixnet client that forwards every accepted stream to **one fixed upstream** (your relay), never a caller-chosen target, so it is structurally not an open proxy. Point `upstream` at your public TLS endpoint so wallets get your real certificate through the mixnet; empty means this relay's local listener (no TLS). The exit's stable mixnet address is printed at startup and written to `<data_dir>/nym_address.txt`; publish it (the relay pool `exit` field) and back the directory up, since losing it rotates the address. See [The mixnet and the scoped exit](../concepts/nym.md).
+
 ## Environment
 
 Secrets stay out of `config.toml`: the GoblinPay token and any keys are provided via the systemd environment file (mounted 0400) or container env.

@@ -26,6 +26,17 @@ The plugin and the bundled name authority read one shared environment (in compos
 | `GOBLINPAY_URL` | unset | Your GoblinPay server, required for any paid mode |
 | `GOBLINPAY_TOKEN` | unset | GoblinPay API token; keep it out of the repo, mount it 0400 |
 
+## The mixnet exit
+
+Two more `.env` keys control the [co-located scoped exit](../concepts/nym.md):
+
+| Key | Default | Meaning |
+| --- | --- | --- |
+| `COMPOSE_PROFILES` | unset | Set to `exit` to run the bundled `mixexit` service beside the relay |
+| `FLOONET_EXIT_UPSTREAM` | `caddy:443` | Where the exit pipes every stream; the default is this stack's own TLS front |
+
+See [Deploy: the mixnet exit](deploy.md#the-mixnet-exit) for bring-up and where the exit's mixnet address lands.
+
 The full key table for both packages lives in the [config keys reference](../reference/config-keys.md).
 
 ## The one-file experience

@@ -9,7 +9,7 @@
 - [Gift wraps: what a relay sees](concepts/gift-wraps.md)
 - [Authentication (NIP-42)](concepts/auth.md)
 - [The name authority](concepts/name-authority.md)
-- [Nym privacy and the Floonet exit](concepts/nym.md)
+- [The mixnet and the scoped exit](concepts/nym.md)
 
 # floonet-strfry
 

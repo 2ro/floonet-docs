@@ -7,6 +7,7 @@
 | `wss://relay.yourdomain/` | Nostr over websocket | The relay itself |
 | `https://relay.yourdomain/` with `Accept: application/nostr+json` | HTTP | The [NIP-11 information document](../concepts/nip11.md) |
 | `https://relay.yourdomain/` (browser) | HTTP | A neutral Floonet landing page with the Floonet logo |
+| The exit's mixnet address (`nym_address.txt`) | Nostr over websocket, via the mixnet | The same relay, dialed straight through the [co-located scoped exit](../concepts/nym.md) when the exit toggle is on |
 
 ## The name authority
 
