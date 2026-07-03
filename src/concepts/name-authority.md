@@ -16,6 +16,10 @@ The rules are inherited from the goblin-nip05d reference implementation and are 
 - **Authenticated registration.** Claiming or releasing a name requires a [NIP-98](https://nips.nostr.com/98) HTTP auth event (kind `27235` with `u`, `method`, and `payload` tags), with a timestamp bound and a replay window, so a captured request cannot be replayed.
 - **Cooldown.** A key that changes its name must wait out a cooldown before changing it again.
 
+## Same subdomain as the relay
+
+A name authority is only useful if `name@relay.yourdomain` actually resolves, so both packages serve it under the **relay's own subdomain** by default rather than a separate hostname. floonet-rs does this structurally: the authority is an in-process module answering on the same binary and port as the relay's HTTP surface, so there is nothing to configure. floonet-strfry's authority is its own process, but the shipped Docker Compose/Caddy stack routes NIP-05 and API paths to it on the same `FLOONET_DOMAIN` as the relay by default; operators splitting the two across separate subdomains can opt back into co-location with a small nginx snippet. See the package pages: [floonet-strfry](../floonet-strfry/name-authority.md), [floonet-rs](../floonet-rs/name-authority.md).
+
 ## The endpoints
 
 | Endpoint | Purpose |

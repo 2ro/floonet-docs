@@ -4,7 +4,7 @@ The keys an operator actually touches, across both packages. Package-specific pa
 
 ## floonet-strfry policy environment
 
-Read by the write-policy plugin and the bundled name authority (in compose, the `.env` file).
+Read by the write-policy plugin and the bundled name authority (in compose, the `.env` file). `FLOONET_AUTHORITY_COLOCATED` isn't a literal key — it names the Compose/Caddy stack's default behavior of serving the authority on the same `FLOONET_DOMAIN` as the relay, with nothing to set; a split relay/authority-subdomain deploy opts back in via an nginx snippet. See [The name authority](../floonet-strfry/name-authority.md#co-located-on-the-relays-domain).
 
 | Key | Default | Meaning |
 | --- | --- | --- |
@@ -52,7 +52,8 @@ Two compose-level `.env` keys control the [co-located mixnet exit](../concepts/n
 | `goblinpay.name_price_grin` | `1.0` | Price of a name in GRIN when `pay_mode = "name"`. Env alias `FLOONET_NAME_PRICE_GRIN`. |
 | `goblinpay.admission_price_grin` | `1.0` | Price of write admission in GRIN when `pay_mode = "write"`. |
 | `name_authority.enabled` | `false` | Serve the [name authority](../floonet-rs/name-authority.md) in-process. |
-| `name_authority.domain` | operator's domain | The NIP-05 domain names resolve under. |
+| `name_authority.domain` | operator's domain | The NIP-05 domain names resolve under — normally the relay's own domain, since the authority is served in-process on the same listener. |
+| `name_authority.base_url` | operator's domain | LOAD-BEARING: NIP-98 auth events are verified against `<base_url><path>`; must match the relay's public URL. |
 | `exit.enabled` | `false` | Run the bundled [co-located mixnet exit](../floonet-rs/config.md#exit-the-co-located-mixnet-exit). |
 | `exit.binary` | `/usr/local/bin/floonet-mixexit` | Path to the bundled exit binary. |
 | `exit.data_dir` | `/var/lib/floonet-rs/mixexit` | Persistent mixnet identity; holds `nym_address.txt`. Back it up. |

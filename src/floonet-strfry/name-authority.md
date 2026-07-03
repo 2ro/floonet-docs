@@ -13,6 +13,10 @@ The name authority is what makes a relay *useful* to a community: it is where `a
 - **Consulted by the plugin.** The [write-policy plugin](write-policy.md) can consult the authority for policies that depend on name state.
 - **Same rules as everywhere.** Validation, cap 20, one name per key, reserved list, look-alike folding, NIP-98 auth, replay protection, cooldown: see [The name authority](../concepts/name-authority.md).
 
+## Co-located on the relay's domain
+
+`FLOONET_AUTHORITY_COLOCATED` is on by default: the shipped `deploy/Caddyfile` routes `/.well-known/nostr.json` and `/api/*` to the authority and everything else to the relay, both on the single `FLOONET_DOMAIN` the compose stack brings up — so `name@FLOONET_DOMAIN` resolves with nothing to configure. Operators who split the relay and the authority across separate subdomains behind nginx (the `deploy/us-east/` pattern: relay on `relay.example`, the authority's own vhost on `nm.example`) can opt back into co-location by including the shipped `deploy/us-east/colocated-authority.conf` snippet in the relay vhost, ahead of the WebSocket catch-all. That snippet only proxies the exact-match NIP-05 read (`GET /.well-known/nostr.json`); registration and the rest of `/api/*` stay on the authority's own domain. See the README's "Co-locating names on the relay domain" section for the full nginx include.
+
 ## Endpoints
 
 The authority serves the standard set under the relay's domain, via the shared proxy:

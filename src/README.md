@@ -20,7 +20,7 @@ Both add the same five features, each configurable, optional, and modular:
 1. **An event-kind whitelist** (the keystone: default deny, see below).
 2. **Authentication**: NIP-42 plus pubkey whitelists.
 3. **Paid access and paid names** via [GoblinPay](floonet-strfry/paid-names.md) (Grin).
-4. **A name authority**: the NIP-05 service that maps names to keys.
+4. **A name authority**: the NIP-05 service that maps names to keys, served under the relay's own subdomain by default so `name@relay.yourdomain` just works with no separate hostname to run.
 5. **A co-located mixnet exit**: a scoped forwarder wallets dial straight over the mixnet, so reaching your relay needs no public DNS. See [The mixnet and the scoped exit](concepts/nym.md).
 
 ## The whitelist keystone

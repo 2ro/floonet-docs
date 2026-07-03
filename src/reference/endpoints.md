@@ -11,7 +11,7 @@
 
 ## The name authority
 
-All endpoints are served under the operator's domain via the shared proxy. `(NIP-98)` means the request must carry a [NIP-98](https://nips.nostr.com/98) `Authorization` event (kind `27235`, `u` + `method` + `payload` tags, bounded timestamp, replay-protected).
+All endpoints are served under the relay's own domain by default (co-located, see [The name authority](../concepts/name-authority.md#same-subdomain-as-the-relay)) — floonet-rs always, since it's the same listener; floonet-strfry via its Compose/Caddy stack, or via an nginx opt-in for split relay/authority subdomains, in which case only the `GET /.well-known/nostr.json` read co-locates and the rest of `/api/*` stays on the authority's own domain. `(NIP-98)` means the request must carry a [NIP-98](https://nips.nostr.com/98) `Authorization` event (kind `27235`, `u` + `method` + `payload` tags, bounded timestamp, replay-protected).
 
 | Endpoint | Auth | Purpose |
 | --- | --- | --- |
