@@ -1,6 +1,6 @@
 # The write-policy plugin
 
-> **Summary.** All Floonet policy in floonet-strfry lives in one small, documented write-policy plugin: kind whitelist first, then auth, then the paid gate, then the name-authority consult. strfry core stays stock. Rejections are fail-closed.
+> **Summary.** All Floonet policy in floonet-strfry lives in one small, documented write-policy plugin: kind whitelist first, then auth, then the paid gate. strfry core stays stock. Rejections are fail-closed.
 
 ## How strfry plugins work
 
@@ -14,19 +14,18 @@ strfry's intended extension point is the write policy (`relay.writePolicy.plugin
 
 The Floonet plugin is a small program structured as a chain of pluggable checks, each with its own config:
 
-1. **Kind whitelist** (the keystone). `kind` must be in `ALLOWED_KINDS`, or the event is shadow-rejected. This check runs first and cannot be disabled.
-2. **Auth**, when enabled: require an `authed` pubkey, or require membership in a pubkey whitelist.
-3. **Paid gate**, when `FLOONET_PAY_MODE=write`: the authed pubkey must have a confirmed GoblinPay payment on record. Results are cached with a TTL so the plugin does not call GoblinPay on every event.
-4. **Name authority consult**, for policies that depend on name state.
+1. **Kind whitelist** (the keystone). `kind` must be in `FLOONET_ALLOWED_KINDS` (default: the [Goblin + Magick Market set](../reference/allowed-kinds.md)), or the event is rejected. This check runs first and cannot be disabled. It applies to every ingest path, including events pulled in via negentropy sync.
+2. **Auth**, when `FLOONET_REQUIRE_AUTH=true`: the connection must have completed NIP-42 AUTH (also enable `relay.auth` in `strfry.conf`).
+3. **Paid gate**, when `FLOONET_PAY_MODE=write`: the authed pubkey must hold a confirmed payment grant, checked against the bundled name authority (`FLOONET_AUTHORITY_URL`, which talks to GoblinPay). Results are cached for `FLOONET_PAID_CACHE_SECS` (default 60) so the plugin does not call out on every event.
 
-**Fail-closed** is the invariant across all checks: malformed input, an unreachable config, or an errored check means reject, never accept.
+**Fail-closed** is the invariant across all checks: malformed input, an unreachable config, or an errored check means reject, never accept. The first rejection wins.
 
 ## Extending it
 
 The plugin is meant to be edited by operators:
 
-- **Add a kind:** edit `ALLOWED_KINDS` and restart. No code.
-- **Add a policy:** add a check function to the chain; each check receives the event and the `authed` pubkey and returns accept, reject, or pass-to-next.
+- **Add a kind:** edit `FLOONET_ALLOWED_KINDS` and restart — or just touch the plugin file; strfry reloads it on mtime change. No code.
+- **Add a policy:** write `def check_foo(req, cfg): return None or "reject reason"` and append it to `CHECKS`; each check receives the request (event plus the `authed` pubkey) and the config, and the first rejection wins.
 - **Replace it entirely:** point `relay.writePolicy.plugin` at your own program; the stdin/stdout contract is all there is.
 
 ## References

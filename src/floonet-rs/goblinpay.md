@@ -8,7 +8,7 @@ Upstream's `pay_to_relay` model (`nostr-rs-relay/src/payment/mod.rs`) defines a 
 
 ## What the GoblinPay processor does
 
-The `src/payment/grinpay.rs` implementation covers the trait's lifecycle against a GoblinPay server:
+The `src/payment/goblinpay.rs` implementation covers the trait's lifecycle against a GoblinPay server:
 
 1. **Create invoice.** Ask GoblinPay for an invoice for the configured amount (`FLOONET_NAME_PRICE_GRIN` for names, or the write-access price). GoblinPay returns the payment details the client needs, including the pay-page URL.
 2. **Confirm.** Poll GoblinPay's REST API for payment status. Confirmation is on-chain, with a Grin payment proof, so a confirmed invoice means real money moved.
@@ -26,9 +26,9 @@ Users can pay a GoblinPay invoice three ways, depending on what the operator ena
 ## Config
 
 ```toml
-[pay_to_relay]
-enabled = true
-processor = "GoblinPay"
+[goblinpay]
+pay_mode = "name"             # or "write"
+url = "https://pay.example.com"
 ```
 
-Plus `GOBLINPAY_URL` and `GOBLINPAY_TOKEN` in the environment. Full table in the [config keys reference](../reference/config-keys.md).
+Plus `FLOONET_GOBLINPAY_TOKEN` in the environment. Setting a paid `pay_mode` wires upstream's `[pay_to_relay]` to the GoblinPay processor automatically. Full table in the [config keys reference](../reference/config-keys.md), full walkthrough in [Configuration](config.md).

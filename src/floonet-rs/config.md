@@ -18,10 +18,15 @@ Keep it [payment-neutral](../concepts/nip11.md). Operators may customize; the de
 
 ```toml
 [limits]
-# The keystone: default deny. Only these kinds are accepted.
-event_kind_allowlist = [0, 3, 5, 13, 1059, 10002, 10050, 27235]
-# Large enough for gift-wrapped slatepacks. Do not shrink.
-max_event_bytes = 131072
+# The keystone: default deny. Only these kinds are accepted. The shipped
+# list is the Goblin wallet + Magick Market union; see the allowed kinds
+# reference for what each one is.
+event_kind_allowlist = [
+    0, 1, 3, 5, 7, 13, 14, 16, 17, 1059, 1111, 10000, 10002, 10050, 24133,
+    27235, 30000, 30003, 30078, 30402, 30405, 30406, 31990,
+]
+# Default 262144: large enough for gift-wrapped slatepacks. Do not shrink.
+#max_event_bytes = 262144
 ```
 
 `event_kind_allowlist` exists upstream (`nostr-rs-relay/src/config.rs:54-79`); floonet-rs enforces it in the write path through the [admission module](admission.md).
@@ -30,32 +35,37 @@ max_event_bytes = 131072
 
 ```toml
 [authorization]
-nip42_auth = false          # require AUTH before writes
-nip42_dms = false           # require AUTH to read gift wraps addressed to you
+nip42_auth = false            # enable NIP-42 (the relay sends AUTH challenges)
+nip42_dms = false             # send gift wraps only to their authenticated recipients
+# require_auth_to_write = false   # with nip42_auth: only AUTHed clients may publish
 # pubkey_whitelist = ["<hex>", "<hex>"]
 ```
 
 Upstream parsed `pubkey_whitelist` but did not gate writes on it; floonet-rs enforces it in admission. See [Authentication](../concepts/auth.md).
 
-### `[pay_to_relay]` + GoblinPay
+### `[goblinpay]`: paid names and paid writes
 
 ```toml
-[pay_to_relay]
-enabled = false             # flip on for paid modes
-processor = "GoblinPay"
+[goblinpay]
+pay_mode = "off"              # off | name | write
+#url = "https://pay.example.com"
+#api_token = ""               # prefer the FLOONET_GOBLINPAY_TOKEN env var
+#name_price_grin = 1.0
+#admission_price_grin = 1.0
 ```
 
-With the environment keys `FLOONET_PAY_MODE`, `FLOONET_NAME_PRICE_GRIN`, `GOBLINPAY_URL`, and `GOBLINPAY_TOKEN` (same names as floonet-strfry; see the [config keys reference](../reference/config-keys.md)). The [GoblinPay processor](goblinpay.md) implements the upstream `PaymentProcessor` trait.
+Every key is also readable from the environment (`FLOONET_PAY_MODE`, `FLOONET_GOBLINPAY_URL`, `FLOONET_GOBLINPAY_TOKEN`, `FLOONET_NAME_PRICE_GRIN`; see the [config keys reference](../reference/config-keys.md)). Setting `pay_mode = "write"` configures upstream's `[pay_to_relay]` section for GoblinPay automatically — you normally never edit that section yourself. The [GoblinPay processor](goblinpay.md) implements the upstream `PaymentProcessor` trait.
 
 ### `[name_authority]`
 
 ```toml
 [name_authority]
-enabled = true
-domain = "relay.yourdomain"
+enabled = true                          # off in the shipped config
+domain = "relay.yourdomain"             # the @domain names live under
+base_url = "https://relay.yourdomain"   # LOAD-BEARING: NIP-98 auth is verified against it
 ```
 
-Serves the NIP-05 endpoints in-process. See [Name authority](name-authority.md).
+Serves the NIP-05 endpoints in-process. Name length, change cooldown, rate limits, and a reserved-names file are further keys in the same section. See [Name authority](name-authority.md).
 
 ### `[exit]`: the co-located mixnet exit
 

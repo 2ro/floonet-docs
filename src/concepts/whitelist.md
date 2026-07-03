@@ -8,7 +8,7 @@ A general-purpose Nostr relay stores whatever anyone throws at it: notes, reacti
 
 ## The allowed set
 
-The initial list matches what the Goblin wallet actually publishes and reads (the canonical list is whatever the wallet uses, in `goblin/src/nostr/`):
+The core of the list matches what the Goblin wallet actually publishes and reads (the canonical list is whatever the wallet uses, in `goblin/src/nostr/`):
 
 | Kind | NIP | Why a Floonet relay carries it |
 | --- | --- | --- |
@@ -21,7 +21,11 @@ The initial list matches what the Goblin wallet actually publishes and reads (th
 | `10050` | 17 | DM relay lists: where to deliver private messages |
 | `27235` | 98 | HTTP auth events, used to register names with the name authority |
 
-See the [allowed kinds reference](../reference/allowed-kinds.md) for the full table.
+The shipped default in both packages is this wallet core **plus** the [Magick Market](https://magick.market) marketplace set (`1`, `7`, `14`, `16`, `17`, `1111`, `10000`, `30000`, `30003`, `30078`, `30402`, `30405`, `30406`, `31990`) and `24133` (Nostr Connect wallet login) — 23 kinds in total. See the [allowed kinds reference](../reference/allowed-kinds.md) for the full table with the reasoning per kind.
+
+## The list in production: `relay.floonet.dev`
+
+The flagship relay is a live example of exactly this policy. It runs floonet-strfry with the shipped default list — no override — and serves two applications at once: the Goblin wallet (private payments as gift wraps) and the Magick Market marketplace (listings, orders, receipts). Zap receipts (`9735`) are deliberately rejected: Lightning is dead in this GRIN-only ecosystem. Seals (`13`) are on the list for completeness but in practice only ever travel *inside* `1059` gift wraps.
 
 ## How each package enforces it
 
@@ -30,11 +34,11 @@ See the [allowed kinds reference](../reference/allowed-kinds.md) for the full ta
 
 ## Behavior on rejection
 
-Dropped events are **silently rejected** by default (a `shadowReject` in strfry terms). A spammer learns nothing about why their event vanished; a legitimate wallet never publishes disallowed kinds in the first place.
+Disallowed kinds are **rejected fail-closed**: the plugin answers `reject` with a terse `blocked: event kind not accepted by this relay`, and any malformed or unparseable input is rejected too, never accepted. A legitimate wallet never publishes disallowed kinds in the first place.
 
 ## Growing the list
 
-`ALLOWED_KINDS` is a single config value: a comma-separated list of integers in the plugin config (strfry) or `event_kind_allowlist` in `config.toml` (rs). If you run a relay for a community that also wants, say, public chat, add the kind and restart. One rule for operators upgrading an existing relay: **never narrow the list below what live wallets already depend on**.
+The whitelist is a single config value: `FLOONET_ALLOWED_KINDS`, a comma-separated list of integers in the plugin environment (strfry), or `event_kind_allowlist` in `config.toml` (rs). If you run a relay for a community that also wants, say, public chat, add the kind and restart (floonet-strfry even reloads the plugin on file change, no restart needed). One rule for operators upgrading an existing relay: **never narrow the list below what live wallets already depend on**.
 
 ## References
 

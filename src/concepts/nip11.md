@@ -12,7 +12,7 @@ A Floonet relay stores gift wraps (kind `1059`), which are opaque, encrypted env
 
 | Package | NIP-11 `name` | NIP-11 `description` | Where it is set |
 | --- | --- | --- | --- |
-| floonet-strfry | `Floonet Relay` | `A strfry Floonet relay.` | `relay.info.name` / `relay.info.description` in `strfry.conf` |
+| floonet-strfry | `Floonet Relay` | `A strfry Floonet relay for the Grin community Nostr network.` | `relay.info.name` / `relay.info.description` in `strfry.conf` |
 | floonet-rs | `floonet-rs-relay` | `A Floonet relay for the Grin community Nostr network.` | the `[info]` block in `config.toml` |
 
 Operators can customize both freely. The point is that the *defaults* carry zero payment language, so nobody ships a payment-labelled relay by accident.

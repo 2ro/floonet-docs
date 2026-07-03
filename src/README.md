@@ -4,7 +4,7 @@
 
 A Floonet relay is an ordinary Nostr relay with strong opinions. It stores only the handful of event kinds the Grin ecosystem actually uses, it says nothing about payments in its public metadata, it welcomes connections arriving through the [Nym](https://nym.com) mixnet, and it ships hardened by default. Wallets like [Goblin](https://goblin.st) use Floonet relays to deliver gift-wrapped Grin payments and to resolve names like `alice`.
 
-The flagship relay, **`relay.floonet.dev`**, runs floonet-strfry with the [co-located mixnet exit](concepts/nym.md) enabled and is the Goblin wallet's default money-path relay: wallets dial it straight over the mixnet, with no public DNS on the payment path.
+The flagship relay, **`relay.floonet.dev`**, runs floonet-strfry with the [co-located mixnet exit](concepts/nym.md) enabled and is the Goblin wallet's default money-path relay: wallets dial it straight over the mixnet, with no public DNS on the payment path. The same relay also hosts the [Magick Market](https://magick.market) marketplace, so it runs the shipped default whitelist unmodified — one relay, two applications.
 
 ## The two packages
 
@@ -25,7 +25,7 @@ Both add the same five features, each configurable, optional, and modular:
 
 ## The whitelist keystone
 
-The single most important design decision in Floonet is **default deny**. A Floonet relay accepts *only* the event kinds it has been explicitly told to allow, and drops everything else. The initial allowed set is exactly what a Grin payment wallet needs:
+The single most important design decision in Floonet is **default deny**. A Floonet relay accepts *only* the event kinds it has been explicitly told to allow, and drops everything else. The core of the allowed set is exactly what a Grin payment wallet needs:
 
 | Kind | What it is |
 | --- | --- |
@@ -38,7 +38,7 @@ The single most important design decision in Floonet is **default deny**. A Floo
 | `10050` | DM relay list (NIP-17) |
 | `27235` | HTTP auth (NIP-98): used by the name authority |
 
-Everything else, notes, reactions, long-form content, is rejected. This keeps a Floonet relay lean, cheap to run, and uninteresting to abuse. The list is one editable config value in both packages, so it can grow later without code changes. See [The whitelist: default deny](concepts/whitelist.md).
+The shipped default in both packages is this wallet core plus the [Magick Market](https://magick.market) marketplace kinds (listings, orders, receipts) and Nostr Connect login — 23 kinds in total, and exactly the list running in production on `relay.floonet.dev`; the [allowed kinds reference](reference/allowed-kinds.md) has the full table. Everything else, long-form content, zaps, bot spam, is rejected. This keeps a Floonet relay lean, cheap to run, and uninteresting to abuse. The list is one editable config value in both packages, so it can grow (or shrink to the wallet core) without code changes. See [The whitelist: default deny](concepts/whitelist.md).
 
 ## How to read these docs
 
