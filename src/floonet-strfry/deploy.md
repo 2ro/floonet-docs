@@ -22,19 +22,26 @@ curl -H 'Accept: application/nostr+json' https://relay.yourdomain/   # NIP-11
 curl https://relay.yourdomain/api/v1/health                          # name authority
 ```
 
-### The mixnet exit
+### The Tor onion service
 
-The compose unit also carries the [co-located scoped mixnet exit](../concepts/nym.md), off by default behind the `exit` compose profile. To turn it on:
+The compose unit also carries the [co-located Tor onion service](../concepts/nym.md), off by default behind the `onion` compose profile. Turning it on brings up plain **system Tor** (via `torrc`) beside the relay, fronting its TLS/websocket port:
 
 ```bash
 # in .env
-COMPOSE_PROFILES=exit
-# optional: where the exit pipes streams. Defaults to this stack's own
-# TLS front (caddy:443), so wallets get your real certificate.
-#FLOONET_EXIT_UPSTREAM=caddy:443
+COMPOSE_PROFILES=onion
+# optional: the HiddenServicePort target the onion forwards to. Defaults to
+# this stack's own TLS front (caddy:443), so wallets get your real certificate.
+#FLOONET_ONION_UPSTREAM=caddy:443
 ```
 
-then `docker compose up -d` again. The exit's stable mixnet address is printed at startup (`docker compose logs mixexit`) and written to `nym_address.txt` in the `mixexit-data` volume. Publish that address (the [relay pool](https://gist.github.com/2ro/79cd885540c88d074fe52f8388a3e5b4) `exit` field) so wallets can dial your relay straight over the mixnet; they fall back to the public mixnet route automatically whenever the exit is down. Back the volume up: losing it rotates the address.
+The shipped `torrc` is the real configuration — a standard onion service in front of the relay:
+
+```
+HiddenServiceDir /var/lib/tor/floonet-relay/
+HiddenServicePort 443 127.0.0.1:443
+```
+
+then `docker compose up -d` again. Enable **Vanguards** on the service side. The relay's stable `.onion` address is written to the `hostname` file inside `HiddenServiceDir`, bind-mounted from the `onion-data` volume. Publish that `.onion` (the [relay pool](https://gist.github.com/2ro/79cd885540c88d074fe52f8388a3e5b4) `onion` field) so wallets can dial your relay over Tor; builds that predate the field simply ignore it, and the relay's public hostname stays reachable over Tor regardless, so publishing an onion never locks anyone out. Back the volume up: losing it rotates the `.onion`.
 
 ## 2. apply-spec (build strfry yourself, add the Floonet layer)
 

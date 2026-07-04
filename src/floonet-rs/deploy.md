@@ -54,4 +54,4 @@ Front it with a TLS reverse proxy that forwards `X-Real-IP` (load-bearing for ra
 - Confirm the whitelist: publish an allowed kind (persists), then a kind `1` note (dropped). The primary acceptance test.
 - Fetch the NIP-11 document and confirm it reads as `floonet-rs-relay` with a neutral description and no payment wording.
 - Add the relay to your wallet and complete a payment end to end.
-- Optionally flip on the [co-located mixnet exit](config.md#exit-the-co-located-mixnet-exit) (`[exit] enabled = true`) so wallets can dial your relay straight over the mixnet.
+- Optionally flip on the [co-located Tor onion service](config.md#onion-the-co-located-tor-onion-service) (`[onion] enabled = true`) so wallets can dial your relay's pinned `.onion` over Tor.

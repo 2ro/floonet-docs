@@ -28,12 +28,12 @@ Read by the write-policy plugin and the bundled name authority (in compose, the 
 
 The read side may also set `filterValidation.allowedKinds` to mirror the whitelist on subscriptions.
 
-Two compose-level `.env` keys control the [co-located mixnet exit](../concepts/nym.md):
+Two compose-level `.env` keys control the [co-located Tor onion service](../concepts/nym.md), which the stack brings up with plain system Tor (via `torrc`) in front of the relay's websocket port:
 
 | Key | Default | Meaning |
 | --- | --- | --- |
-| `COMPOSE_PROFILES` | unset | `exit` runs the bundled `mixexit` service beside the relay. |
-| `FLOONET_EXIT_UPSTREAM` | `caddy:443` | Where the exit pipes streams; defaults to the stack's own TLS front. |
+| `COMPOSE_PROFILES` | unset | `onion` runs the bundled system-Tor onion service beside the relay. |
+| `FLOONET_ONION_UPSTREAM` | `caddy:443` | The `HiddenServicePort` target the onion forwards to; defaults to the stack's own TLS front. |
 
 ## floonet-rs (`config.toml`)
 
@@ -54,7 +54,6 @@ Two compose-level `.env` keys control the [co-located mixnet exit](../concepts/n
 | `name_authority.enabled` | `false` | Serve the [name authority](../floonet-rs/name-authority.md) in-process. |
 | `name_authority.domain` | operator's domain | The NIP-05 domain names resolve under — normally the relay's own domain, since the authority is served in-process on the same listener. |
 | `name_authority.base_url` | operator's domain | LOAD-BEARING: NIP-98 auth events are verified against `<base_url><path>`; must match the relay's public URL. |
-| `exit.enabled` | `false` | Run the bundled [co-located mixnet exit](../floonet-rs/config.md#exit-the-co-located-mixnet-exit). |
-| `exit.binary` | `/usr/local/bin/floonet-mixexit` | Path to the bundled exit binary. |
-| `exit.data_dir` | `/var/lib/floonet-rs/mixexit` | Persistent mixnet identity; holds `nym_address.txt`. Back it up. |
-| `exit.upstream` | unset (local listener) | Where the exit pipes streams; point it at your public TLS endpoint. |
+| `onion.enabled` | `false` | Run the bundled [co-located Tor onion service](../floonet-rs/config.md#onion-the-co-located-tor-onion-service) — system Tor (via `torrc`) in front of the relay's websocket port. |
+| `onion.hidden_service_dir` | `/var/lib/tor/floonet-relay` | Maps to the torrc `HiddenServiceDir`: the persistent onion key; its `hostname` file holds the `.onion`. Back it up, or the `.onion` rotates. |
+| `onion.upstream` | `127.0.0.1:443` | Maps to the torrc `HiddenServicePort` target; point it at your relay's TLS endpoint. |

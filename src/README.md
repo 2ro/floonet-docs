@@ -2,9 +2,9 @@
 
 **Floonet is a network of Nostr relays for the [Grin](https://grin.mw) community. Anyone can run one, and anyone can run a name authority on one so people can claim (and optionally pay for) a name.**
 
-A Floonet relay is an ordinary Nostr relay with strong opinions. It stores only the handful of event kinds the Grin ecosystem actually uses, it says nothing about payments in its public metadata, it welcomes connections arriving through the [Nym](https://nym.com) mixnet, and it ships hardened by default. Wallets like [Goblin](https://goblin.st) use Floonet relays to deliver gift-wrapped Grin payments and to resolve names like `alice`.
+A Floonet relay is an ordinary Nostr relay with strong opinions. It stores only the handful of event kinds the Grin ecosystem actually uses, it says nothing about payments in its public metadata, it welcomes connections arriving over [Tor](https://www.torproject.org), and it ships hardened by default. Wallets like [Goblin](https://goblin.st) use Floonet relays to deliver gift-wrapped Grin payments and to resolve names like `alice`.
 
-The flagship relay, **`relay.floonet.dev`**, runs floonet-strfry with the [co-located mixnet exit](concepts/nym.md) enabled and is the Goblin wallet's default money-path relay: wallets dial it straight over the mixnet, with no public DNS on the payment path. The same relay also hosts the [Magick Market](https://magick.market) marketplace, so it runs the shipped default whitelist unmodified — one relay, two applications.
+The flagship relay, **`relay.floonet.dev`**, runs floonet-strfry with its [Tor onion service](concepts/nym.md) enabled and is the Goblin wallet's default money-path relay: wallets dial its pinned `.onion` over Tor, with no public DNS on the payment path. The same relay also hosts the [Magick Market](https://magick.market) marketplace, so it runs the shipped default whitelist unmodified — one relay, two applications.
 
 ## The two packages
 
@@ -21,7 +21,7 @@ Both add the same five features, each configurable, optional, and modular:
 2. **Authentication**: NIP-42 plus pubkey whitelists.
 3. **Paid access and paid names** via [GoblinPay](floonet-strfry/paid-names.md) (Grin).
 4. **A name authority**: the NIP-05 service that maps names to keys, served under the relay's own subdomain by default so `name@relay.yourdomain` just works with no separate hostname to run.
-5. **A co-located mixnet exit**: a scoped forwarder wallets dial straight over the mixnet, so reaching your relay needs no public DNS. See [The mixnet and the scoped exit](concepts/nym.md).
+5. **A Tor onion service**: wallets dial the relay's pinned `.onion` over Tor, so reaching your relay needs no public DNS. See [Tor and the relay's onion service](concepts/nym.md).
 
 ## The whitelist keystone
 

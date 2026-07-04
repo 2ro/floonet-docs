@@ -67,17 +67,23 @@ base_url = "https://relay.yourdomain"   # LOAD-BEARING: NIP-98 auth is verified 
 
 Serves the NIP-05 endpoints in-process. Name length, change cooldown, rate limits, and a reserved-names file are further keys in the same section. See [Name authority](name-authority.md).
 
-### `[exit]`: the co-located mixnet exit
+### `[onion]`: the co-located Tor onion service
 
 ```toml
-[exit]
+[onion]
 enabled = true
-# binary = "/usr/local/bin/floonet-mixexit"      # the bundled exit binary
-# data_dir = "/var/lib/floonet-rs/mixexit"       # persistent mixnet identity
-# upstream = "relay.yourdomain:443"              # your PUBLIC TLS endpoint
+# hidden_service_dir = "/var/lib/tor/floonet-relay"   # maps to torrc HiddenServiceDir: persistent onion key, holds `hostname`
+# upstream = "127.0.0.1:443"                           # maps to the torrc HiddenServicePort target: your relay's TLS endpoint
 ```
 
-When enabled, the relay runs the bundled `floonet-mixexit` beside itself: an ordinary unbonded mixnet client that forwards every accepted stream to **one fixed upstream** (your relay), never a caller-chosen target, so it is structurally not an open proxy. Point `upstream` at your public TLS endpoint so wallets get your real certificate through the mixnet; empty means this relay's local listener (no TLS). The exit's stable mixnet address is printed at startup and written to `<data_dir>/nym_address.txt`; publish it (the [relay pool](https://gist.github.com/2ro/79cd885540c88d074fe52f8388a3e5b4) `exit` field) and back the directory up, since losing it rotates the address. See [The mixnet and the scoped exit](../concepts/nym.md).
+When enabled, the package runs a co-located **Tor onion service** in front of the relay's websocket port — plain, mature system Tor (C-Tor) doing the hosting half, not a bundled custom binary. The real configuration is the `torrc` it brings up:
+
+```
+HiddenServiceDir /var/lib/tor/floonet-relay/
+HiddenServicePort 443 127.0.0.1:443
+```
+
+`HiddenServicePort` forwards to your relay's TLS endpoint (for example `127.0.0.1:443`) so wallets get your real certificate through the onion; the hostname-validated TLS handshake stays end to end. Enable **Vanguards** on the service side. The relay's stable `.onion` address is the `hostname` file inside `HiddenServiceDir`; publish it (the [relay pool](https://gist.github.com/2ro/79cd885540c88d074fe52f8388a3e5b4) `onion` field) and back the directory up, since losing it rotates the `.onion`. See [Tor and the relay's onion service](../concepts/nym.md).
 
 ## Environment
 
