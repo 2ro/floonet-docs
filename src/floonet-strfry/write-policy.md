@@ -24,7 +24,7 @@ The Floonet plugin is a small program structured as a chain of pluggable checks,
 
 The plugin is meant to be edited by operators:
 
-- **Add a kind:** edit `FLOONET_ALLOWED_KINDS` and restart — or just touch the plugin file; strfry reloads it on mtime change. No code.
+- **Add a kind:** edit `FLOONET_ALLOWED_KINDS` and restart, or just touch the plugin file; strfry reloads it on mtime change. No code.
 - **Add a policy:** write `def check_foo(req, cfg): return None or "reject reason"` and append it to `CHECKS`; each check receives the request (event plus the `authed` pubkey) and the config, and the first rejection wins.
 - **Replace it entirely:** point `relay.writePolicy.plugin` at your own program; the stdin/stdout contract is all there is.
 

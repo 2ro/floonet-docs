@@ -4,7 +4,7 @@
 
 A Floonet relay is an ordinary Nostr relay with strong opinions. It stores only the handful of event kinds the Grin ecosystem actually uses, it says nothing about payments in its public metadata, it welcomes connections arriving over [Tor](https://www.torproject.org), and it ships hardened by default. Wallets like [Goblin](https://goblin.st) use Floonet relays to deliver gift-wrapped Grin payments and to resolve names like `alice`.
 
-The flagship relay, **`relay.floonet.dev`**, runs floonet-strfry with its [Tor onion service](concepts/nym.md) enabled and is the Goblin wallet's default money-path relay: wallets dial its pinned `.onion` over Tor, with no public DNS on the payment path. The same relay also hosts the [Magick Market](https://magick.market) marketplace, so it runs the shipped default whitelist unmodified — one relay, two applications.
+The flagship relay, **`relay.floonet.dev`**, runs floonet-strfry and is the Goblin wallet's default money-path relay: wallets reach it [over Tor](concepts/nym.md), dialing its ordinary clearnet host through a Tor exit so the wallet's own IP never touches the payment path. The same relay also hosts the [Magick Market](https://magick.market) marketplace, so it runs the shipped default whitelist unmodified: one relay, two applications.
 
 ## The two packages
 
@@ -15,13 +15,14 @@ Floonet ships as two relay packages. Both carry the same conventions; pick the o
 | **[floonet-strfry](floonet-strfry/deploy.md)** | [strfry](https://github.com/hoytech/strfry) (C++) | Stock strfry at a pinned ref plus a spec: a modular write-policy plugin, a bundled name authority, and a TLS proxy, deployed as one Docker Compose unit. |
 | **[floonet-rs](floonet-rs/deploy.md)** | [nostr-rs-relay](https://github.com/scsibug/nostr-rs-relay) (Rust) | A single binary with an installer and a hardened systemd unit. Policy lives in a composable admission module; the name authority and the GoblinPay payment processor are built in. |
 
-Both add the same five features, each configurable, optional, and modular:
+Both add the same four features, each configurable, optional, and modular:
 
 1. **An event-kind whitelist** (the keystone: default deny, see below).
 2. **Authentication**: NIP-42 plus pubkey whitelists.
 3. **Paid access and paid names** via [GoblinPay](floonet-strfry/paid-names.md) (Grin).
 4. **A name authority**: the NIP-05 service that maps names to keys, served under the relay's own subdomain by default so `name@relay.yourdomain` just works with no separate hostname to run.
-5. **A Tor onion service**: wallets dial the relay's pinned `.onion` over Tor, so reaching your relay needs no public DNS. See [Tor and the relay's onion service](concepts/nym.md).
+
+The relay needs no special transport component. Wallets reach it [over Tor](concepts/nym.md); a Floonet relay is just a normal public relay that accepts Tor connections.
 
 ## The whitelist keystone
 
@@ -38,7 +39,7 @@ The single most important design decision in Floonet is **default deny**. A Floo
 | `10050` | DM relay list (NIP-17) |
 | `27235` | HTTP auth (NIP-98): used by the name authority |
 
-The shipped default in both packages is this wallet core plus the [Magick Market](https://magick.market) marketplace kinds (listings, orders, receipts) and Nostr Connect login — 23 kinds in total, and exactly the list running in production on `relay.floonet.dev`; the [allowed kinds reference](reference/allowed-kinds.md) has the full table. Everything else, long-form content, zaps, bot spam, is rejected. This keeps a Floonet relay lean, cheap to run, and uninteresting to abuse. The list is one editable config value in both packages, so it can grow (or shrink to the wallet core) without code changes. See [The whitelist: default deny](concepts/whitelist.md).
+The shipped default in both packages is this wallet core plus the [Magick Market](https://magick.market) marketplace kinds (listings, orders, receipts) and Nostr Connect login: 23 kinds in total, and exactly the list running in production on `relay.floonet.dev`; the [allowed kinds reference](reference/allowed-kinds.md) has the full table. Everything else, long-form content, zaps, bot spam, is rejected. This keeps a Floonet relay lean, cheap to run, and uninteresting to abuse. The list is one editable config value in both packages, so it can grow (or shrink to the wallet core) without code changes. See [The whitelist: default deny](concepts/whitelist.md).
 
 ## How to read these docs
 

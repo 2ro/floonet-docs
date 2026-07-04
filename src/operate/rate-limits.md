@@ -1,13 +1,13 @@
 # Rate limits
 
-> **Summary.** Floonet rate limiting is designed for Tor reality: relay connections all arrive from the co-located Tor process (localhost), and clearnet HTTP to the name authority arrives from a few shared Tor exit IPs, so naive per-IP limits either tell you nothing or punish the wrong people. Limit per connection where possible, keep per-IP windows loose, and lean on the whitelist and NIP-98 replay protection to do the real work.
+> **Summary.** Floonet rate limiting is designed for Tor reality: both the relay websockets and the name authority's clearnet HTTP arrive from a handful of shared Tor exit IPs, each carrying many users, so naive per-IP limits punish the wrong people. Limit per connection where possible, keep per-IP windows loose, and lean on the whitelist and NIP-98 replay protection to do the real work.
 
 ## The Tor caveat first
 
-Wallet traffic arrives over [Tor](../concepts/nym.md). Relay websocket connections come in through the co-located system-Tor onion service, so they all originate from `127.0.0.1` — the source IP is always localhost and identifies no one. The name authority's clearnet HTTP lookups arrive instead from a handful of shared Tor exit IPs, each carrying many users. Either way, any control keyed only on IP address will eventually rate limit, or ban, a source that dozens of honest wallets sit behind. The rules that follow all account for this:
+Wallet traffic arrives over [Tor](../concepts/nym.md): every wallet dials the relay's clearnet host through a Tor exit, so both the relay websockets and the name authority's HTTP lookups arrive from the same handful of shared Tor exit IPs, each of which many honest wallets sit behind. Any control keyed only on IP address will eventually rate limit, or ban, a source that dozens of users share. The rules that follow all account for this:
 
-- **Relay websockets: limit per connection, not per IP.** Event-rate and subscription limits apply to each websocket independently — which is the only thing that means anything when every connection reads as localhost.
-- **Do not put Floonet services behind IP-reputation banning** (fail2ban and friends) without exempting Tor — relay connections come from localhost, and HTTP lookups come from shared Tor exit IPs — or you will ban your own users in bulk.
+- **Relay websockets: limit per connection, not per IP.** Event-rate and subscription limits apply to each websocket independently, which is the only thing that means anything when one exit IP fronts many users.
+- **Do not put Floonet services behind IP-reputation banning** (fail2ban and friends) without exempting Tor exit IPs, or you will ban your own users in bulk.
 
 ## What actually protects the relay
 
@@ -19,4 +19,4 @@ Wallet traffic arrives over [Tor](../concepts/nym.md). Relay websocket connectio
 
 ## Tuning
 
-The shipped defaults are deliberately generous on reads and conservative on writes. If you tighten them, watch for the Tor signature in your logs first: many distinct pubkeys behind one IP — localhost for relay connections, a shared exit IP for HTTP lookups — is normal Floonet traffic, not an attack.
+The shipped defaults are deliberately generous on reads and conservative on writes. If you tighten them, watch for the Tor signature in your logs first: many distinct pubkeys behind one shared Tor exit IP, on both the websocket and the HTTP side, is normal Floonet traffic, not an attack.

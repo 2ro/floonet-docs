@@ -4,7 +4,7 @@
 
 ## Shape
 
-- **A module, not a sidecar.** `src/name_authority.rs` serves the NIP-05 and registration endpoints from the same binary and the same port as the relay's HTTP surface. One process to run, one unit to monitor. (Operators who prefer a separate authority process can run one as a sibling instead; both arrangements are supported.) Because it is the same listener, `name@relay.yourdomain` resolves automatically — there is no split-hostname deployment to opt back into, unlike floonet-strfry's [Docker Compose vs. split-nginx](../floonet-strfry/name-authority.md#co-located-on-the-relays-domain) choice.
+- **A module, not a sidecar.** `src/name_authority.rs` serves the NIP-05 and registration endpoints from the same binary and the same port as the relay's HTTP surface. One process to run, one unit to monitor. (Operators who prefer a separate authority process can run one as a sibling instead; both arrangements are supported.) Because it is the same listener, `name@relay.yourdomain` resolves automatically; there is no split-hostname deployment to opt back into, unlike floonet-strfry's [Docker Compose vs. split-nginx](../floonet-strfry/name-authority.md#co-located-on-the-relays-domain) choice.
 - **Storage via migration.** The authority's tables (`name_claims`, and `paid_pubkeys` for the paid gate) are added with a standard repo migration and a `DB_VERSION` bump, so they upgrade and back up with the rest of the relay database.
 - **Same rules as everywhere.** Validation (lowercase `[a-z0-9._-]`, alphanumeric ends, cap 20), one active name per key via a partial unique index, reserved list, look-alike folding, NIP-98 registration with replay protection, cooldown. See [The name authority](../concepts/name-authority.md).
 

@@ -22,26 +22,9 @@ curl -H 'Accept: application/nostr+json' https://relay.yourdomain/   # NIP-11
 curl https://relay.yourdomain/api/v1/health                          # name authority
 ```
 
-### The Tor onion service
+### Reaching the relay over Tor
 
-The compose unit also carries the [co-located Tor onion service](../concepts/nym.md), off by default behind the `onion` compose profile. Turning it on brings up plain **system Tor** (via `torrc`) beside the relay, fronting its TLS/websocket port:
-
-```bash
-# in .env
-COMPOSE_PROFILES=onion
-# optional: the HiddenServicePort target the onion forwards to. Defaults to
-# this stack's own TLS front (caddy:443), so wallets get your real certificate.
-#FLOONET_ONION_UPSTREAM=caddy:443
-```
-
-The shipped `torrc` is the real configuration — a standard onion service in front of the relay:
-
-```
-HiddenServiceDir /var/lib/tor/floonet-relay/
-HiddenServicePort 443 127.0.0.1:443
-```
-
-then `docker compose up -d` again. Enable **Vanguards** on the service side. The relay's stable `.onion` address is written to the `hostname` file inside `HiddenServiceDir`, bind-mounted from the `onion-data` volume. Publish that `.onion` (the [relay pool](https://gist.github.com/2ro/79cd885540c88d074fe52f8388a3e5b4) `onion` field) so wallets can dial your relay over Tor; builds that predate the field simply ignore it, and the relay's public hostname stays reachable over Tor regardless, so publishing an onion never locks anyone out. Back the volume up: losing it rotates the `.onion`.
+Nothing to deploy. Wallets reach the relay [over Tor](../concepts/nym.md) by dialing its ordinary clearnet host through a Tor exit, so the compose stack needs no transport component of its own; the relay is simply a normal public endpoint behind Caddy's TLS. The only requirement is that nothing in front of the relay blocks Tor exit IPs. See [Tor: how wallets reach a relay](../concepts/nym.md).
 
 ## 2. apply-spec (build strfry yourself, add the Floonet layer)
 

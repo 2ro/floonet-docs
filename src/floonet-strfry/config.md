@@ -28,16 +28,9 @@ The plugin and the bundled name authority read one shared environment (in compos
 | `GOBLINPAY_URL` | unset | Your GoblinPay server, required for any paid mode |
 | `GOBLINPAY_TOKEN` | unset | GoblinPay API token; keep it out of the repo, mount it 0400 |
 
-## The Tor onion service
+## Reaching the relay over Tor
 
-Two more `.env` keys control the [co-located Tor onion service](../concepts/nym.md) — plain system Tor (via `torrc`) in front of the relay's websocket port:
-
-| Key | Default | Meaning |
-| --- | --- | --- |
-| `COMPOSE_PROFILES` | unset | Set to `onion` to run the bundled system-Tor onion service beside the relay |
-| `FLOONET_ONION_UPSTREAM` | `caddy:443` | The `HiddenServicePort` target the onion forwards to; the default is this stack's own TLS front |
-
-See [Deploy: the Tor onion service](deploy.md#the-tor-onion-service) for bring-up and where the relay's `.onion` address lands.
+There is nothing to configure. Wallets reach the relay [over Tor](../concepts/nym.md) by dialing the stack's ordinary clearnet host through a Tor exit; the Caddy TLS front and the relay behind it stay a normal public endpoint. Just make sure nothing upstream blocks Tor exit IPs. See [Tor: how wallets reach a relay](../concepts/nym.md).
 
 The full key table for both packages lives in the [config keys reference](../reference/config-keys.md).
 

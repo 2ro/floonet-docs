@@ -7,11 +7,12 @@
 | `wss://relay.yourdomain/` | Nostr over websocket | The relay itself |
 | `https://relay.yourdomain/` with `Accept: application/nostr+json` | HTTP | The [NIP-11 information document](../concepts/nip11.md) |
 | `https://relay.yourdomain/` (browser) | HTTP | A neutral Floonet landing page with the Floonet logo |
-| The relay's `.onion` address (the onion service `hostname` file) | Nostr over websocket, over Tor | The same relay, dialed over Tor via the [co-located onion service](../concepts/nym.md) when the onion toggle is on |
+
+Wallets reach every endpoint above [over Tor](../concepts/nym.md), dialing the relay's clearnet host through a Tor exit; there is no separate onion address to publish.
 
 ## The name authority
 
-All endpoints are served under the relay's own domain by default (co-located, see [The name authority](../concepts/name-authority.md#same-subdomain-as-the-relay)) — floonet-rs always, since it's the same listener; floonet-strfry via its Compose/Caddy stack, or via an nginx opt-in for split relay/authority subdomains, in which case only the `GET /.well-known/nostr.json` read co-locates and the rest of `/api/*` stays on the authority's own domain. `(NIP-98)` means the request must carry a [NIP-98](https://nips.nostr.com/98) `Authorization` event (kind `27235`, `u` + `method` + `payload` tags, bounded timestamp, replay-protected).
+All endpoints are served under the relay's own domain by default (co-located, see [The name authority](../concepts/name-authority.md#same-subdomain-as-the-relay)): floonet-rs always, since it's the same listener; floonet-strfry via its Compose/Caddy stack, or via an nginx opt-in for split relay/authority subdomains, in which case only the `GET /.well-known/nostr.json` read co-locates and the rest of `/api/*` stays on the authority's own domain. `(NIP-98)` means the request must carry a [NIP-98](https://nips.nostr.com/98) `Authorization` event (kind `27235`, `u` + `method` + `payload` tags, bounded timestamp, replay-protected).
 
 | Endpoint | Auth | Purpose |
 | --- | --- | --- |

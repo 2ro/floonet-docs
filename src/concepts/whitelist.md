@@ -21,11 +21,11 @@ The core of the list matches what the Goblin wallet actually publishes and reads
 | `10050` | 17 | DM relay lists: where to deliver private messages |
 | `27235` | 98 | HTTP auth events, used to register names with the name authority |
 
-The shipped default in both packages is this wallet core **plus** the [Magick Market](https://magick.market) marketplace set (`1`, `7`, `14`, `16`, `17`, `1111`, `10000`, `30000`, `30003`, `30078`, `30402`, `30405`, `30406`, `31990`) and `24133` (Nostr Connect wallet login) — 23 kinds in total. See the [allowed kinds reference](../reference/allowed-kinds.md) for the full table with the reasoning per kind.
+The shipped default in both packages is this wallet core **plus** the [Magick Market](https://magick.market) marketplace set (`1`, `7`, `14`, `16`, `17`, `1111`, `10000`, `30000`, `30003`, `30078`, `30402`, `30405`, `30406`, `31990`) and `24133` (Nostr Connect wallet login): 23 kinds in total. See the [allowed kinds reference](../reference/allowed-kinds.md) for the full table with the reasoning per kind.
 
 ## The list in production: `relay.floonet.dev`
 
-The flagship relay is a live example of exactly this policy. It runs floonet-strfry with the shipped default list — no override — and serves two applications at once: the Goblin wallet (private payments as gift wraps) and the Magick Market marketplace (listings, orders, receipts). Zap receipts (`9735`) are deliberately rejected: Lightning is dead in this GRIN-only ecosystem. Seals (`13`) are on the list for completeness but in practice only ever travel *inside* `1059` gift wraps.
+The flagship relay is a live example of exactly this policy. It runs floonet-strfry with the shipped default list (no override) and serves two applications at once: the Goblin wallet (private payments as gift wraps) and the Magick Market marketplace (listings, orders, receipts). Zap receipts (`9735`) are deliberately rejected: Lightning is dead in this GRIN-only ecosystem. Seals (`13`) are on the list for completeness but in practice only ever travel *inside* `1059` gift wraps.
 
 ## How each package enforces it
 

@@ -54,7 +54,7 @@ pay_mode = "off"              # off | name | write
 #admission_price_grin = 1.0
 ```
 
-Every key is also readable from the environment (`FLOONET_PAY_MODE`, `FLOONET_GOBLINPAY_URL`, `FLOONET_GOBLINPAY_TOKEN`, `FLOONET_NAME_PRICE_GRIN`; see the [config keys reference](../reference/config-keys.md)). Setting `pay_mode = "write"` configures upstream's `[pay_to_relay]` section for GoblinPay automatically — you normally never edit that section yourself. The [GoblinPay processor](goblinpay.md) implements the upstream `PaymentProcessor` trait.
+Every key is also readable from the environment (`FLOONET_PAY_MODE`, `FLOONET_GOBLINPAY_URL`, `FLOONET_GOBLINPAY_TOKEN`, `FLOONET_NAME_PRICE_GRIN`; see the [config keys reference](../reference/config-keys.md)). Setting `pay_mode = "write"` configures upstream's `[pay_to_relay]` section for GoblinPay automatically; you normally never edit that section yourself. The [GoblinPay processor](goblinpay.md) implements the upstream `PaymentProcessor` trait.
 
 ### `[name_authority]`
 
@@ -67,23 +67,9 @@ base_url = "https://relay.yourdomain"   # LOAD-BEARING: NIP-98 auth is verified 
 
 Serves the NIP-05 endpoints in-process. Name length, change cooldown, rate limits, and a reserved-names file are further keys in the same section. See [Name authority](name-authority.md).
 
-### `[onion]`: the co-located Tor onion service
+## Reaching the relay over Tor
 
-```toml
-[onion]
-enabled = true
-# hidden_service_dir = "/var/lib/tor/floonet-relay"   # maps to torrc HiddenServiceDir: persistent onion key, holds `hostname`
-# upstream = "127.0.0.1:443"                           # maps to the torrc HiddenServicePort target: your relay's TLS endpoint
-```
-
-When enabled, the package runs a co-located **Tor onion service** in front of the relay's websocket port — plain, mature system Tor (C-Tor) doing the hosting half, not a bundled custom binary. The real configuration is the `torrc` it brings up:
-
-```
-HiddenServiceDir /var/lib/tor/floonet-relay/
-HiddenServicePort 443 127.0.0.1:443
-```
-
-`HiddenServicePort` forwards to your relay's TLS endpoint (for example `127.0.0.1:443`) so wallets get your real certificate through the onion; the hostname-validated TLS handshake stays end to end. Enable **Vanguards** on the service side. The relay's stable `.onion` address is the `hostname` file inside `HiddenServiceDir`; publish it (the [relay pool](https://gist.github.com/2ro/79cd885540c88d074fe52f8388a3e5b4) `onion` field) and back the directory up, since losing it rotates the `.onion`. See [Tor and the relay's onion service](../concepts/nym.md).
+There is nothing to configure here. Wallets reach the relay [over Tor](../concepts/nym.md) by dialing its ordinary clearnet host through a Tor exit; the relay is a normal public endpoint. Make sure whatever fronts it (TLS proxy, firewall) accepts connections from Tor exit IPs. See [Tor: how wallets reach a relay](../concepts/nym.md).
 
 ## Environment
 

@@ -4,7 +4,7 @@ The keys an operator actually touches, across both packages. Package-specific pa
 
 ## floonet-strfry policy environment
 
-Read by the write-policy plugin and the bundled name authority (in compose, the `.env` file). `FLOONET_AUTHORITY_COLOCATED` isn't a literal key — it names the Compose/Caddy stack's default behavior of serving the authority on the same `FLOONET_DOMAIN` as the relay, with nothing to set; a split relay/authority-subdomain deploy opts back in via an nginx snippet. See [The name authority](../floonet-strfry/name-authority.md#co-located-on-the-relays-domain).
+Read by the write-policy plugin and the bundled name authority (in compose, the `.env` file). `FLOONET_AUTHORITY_COLOCATED` isn't a literal key; it names the Compose/Caddy stack's default behavior of serving the authority on the same `FLOONET_DOMAIN` as the relay, with nothing to set; a split relay/authority-subdomain deploy opts back in via an nginx snippet. See [The name authority](../floonet-strfry/name-authority.md#co-located-on-the-relays-domain).
 
 | Key | Default | Meaning |
 | --- | --- | --- |
@@ -28,12 +28,7 @@ Read by the write-policy plugin and the bundled name authority (in compose, the 
 
 The read side may also set `filterValidation.allowedKinds` to mirror the whitelist on subscriptions.
 
-Two compose-level `.env` keys control the [co-located Tor onion service](../concepts/nym.md), which the stack brings up with plain system Tor (via `torrc`) in front of the relay's websocket port:
-
-| Key | Default | Meaning |
-| --- | --- | --- |
-| `COMPOSE_PROFILES` | unset | `onion` runs the bundled system-Tor onion service beside the relay. |
-| `FLOONET_ONION_UPSTREAM` | `caddy:443` | The `HiddenServicePort` target the onion forwards to; defaults to the stack's own TLS front. |
+There is no transport key to set: wallets reach the relay [over Tor](../concepts/nym.md) by dialing its clearnet host through a Tor exit, so the relay needs no onion or mixnet component. Just keep Tor exit IPs unblocked.
 
 ## floonet-rs (`config.toml`)
 
@@ -52,8 +47,5 @@ Two compose-level `.env` keys control the [co-located Tor onion service](../conc
 | `goblinpay.name_price_grin` | `1.0` | Price of a name in GRIN when `pay_mode = "name"`. Env alias `FLOONET_NAME_PRICE_GRIN`. |
 | `goblinpay.admission_price_grin` | `1.0` | Price of write admission in GRIN when `pay_mode = "write"`. |
 | `name_authority.enabled` | `false` | Serve the [name authority](../floonet-rs/name-authority.md) in-process. |
-| `name_authority.domain` | operator's domain | The NIP-05 domain names resolve under — normally the relay's own domain, since the authority is served in-process on the same listener. |
+| `name_authority.domain` | operator's domain | The NIP-05 domain names resolve under, normally the relay's own domain, since the authority is served in-process on the same listener. |
 | `name_authority.base_url` | operator's domain | LOAD-BEARING: NIP-98 auth events are verified against `<base_url><path>`; must match the relay's public URL. |
-| `onion.enabled` | `false` | Run the bundled [co-located Tor onion service](../floonet-rs/config.md#onion-the-co-located-tor-onion-service) — system Tor (via `torrc`) in front of the relay's websocket port. |
-| `onion.hidden_service_dir` | `/var/lib/tor/floonet-relay` | Maps to the torrc `HiddenServiceDir`: the persistent onion key; its `hostname` file holds the `.onion`. Back it up, or the `.onion` rotates. |
-| `onion.upstream` | `127.0.0.1:443` | Maps to the torrc `HiddenServicePort` target; point it at your relay's TLS endpoint. |
