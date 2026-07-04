@@ -31,6 +31,7 @@ The marketplace also reuses `0`, `5`, `1059`, and `10002` above.
 | `10000` | [51](https://nips.nostr.com/51) | Mute list | Merchant/product blacklist |
 | `30000` | [51](https://nips.nostr.com/51) | People set | Admins, editors, featured users |
 | `30003` | [51](https://nips.nostr.com/51) | Bookmark set | Featured collections |
+| `30023` | [23](https://nips.nostr.com/23) | Long-form article | News and long-form posts (**author-locked**, see below) |
 | `30078` | [78](https://nips.nostr.com/78) | App-specific data | Cart, relay preferences, registries |
 | `30402` | [99](https://nips.nostr.com/99) | Product listing | Classified listing / product |
 | `30405` | Gamma | Product collection | Collections and featured products |
@@ -38,6 +39,17 @@ The marketplace also reuses `0`, `5`, `1059`, and `10002` above.
 | `31990` | [89](https://nips.nostr.com/89) | Handler information | Marketplace instance settings |
 
 "Gamma" marks kinds from the Gamma Markets spec the marketplace implements; they have no merged NIP yet.
+
+## Public notes are author-locked
+
+Being on the whitelist is necessary but not sufficient for the two public-note kinds. Kind `1` (text notes) and kind `30023` (long-form articles) are accepted **only** from an operator-chosen set of authors. This is closed by default: with no authors configured, both kinds are rejected for everyone, so random notes cannot be spammed to the relay. Every other kind is unaffected, and kind `0` profiles stay open so wallets can republish them.
+
+Operators list the authorized authors as hex pubkeys or npubs (their choice):
+
+- **floonet-strfry**: `FLOONET_AUTHORIZED_AUTHORS`, comma-separated, in `.env` (or in a `KEY=VALUE` file named `floonet.env` next to the plugin, path overridable via `FLOONET_ENV_FILE`; real environment variables win, and `touch`ing the plugin reloads it with no restart).
+- **floonet-rs**: `authorization.public_note_authors` in `config.toml`.
+
+Invalid entries are logged and skipped; the rest still apply.
 
 ## Excluded on purpose
 
