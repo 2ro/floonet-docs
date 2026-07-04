@@ -8,7 +8,7 @@
 | `https://relay.yourdomain/` with `Accept: application/nostr+json` | HTTP | The [NIP-11 information document](../concepts/nip11.md) |
 | `https://relay.yourdomain/` (browser) | HTTP | A neutral Floonet landing page with the Floonet logo |
 
-Wallets reach every endpoint above [over Tor](../concepts/nym.md), dialing the relay's clearnet host through a Tor exit; there is no separate onion address to publish.
+Wallets reach every endpoint above [over Tor](../concepts/tor.md), dialing the relay's clearnet host through a Tor exit; there is no separate onion address to publish.
 
 ## The name authority
 

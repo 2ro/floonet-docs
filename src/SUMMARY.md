@@ -9,7 +9,7 @@
 - [Gift wraps: what a relay sees](concepts/gift-wraps.md)
 - [Authentication (NIP-42)](concepts/auth.md)
 - [The name authority](concepts/name-authority.md)
-- [Tor: how wallets reach a relay](concepts/nym.md)
+- [Tor: how wallets reach a relay](concepts/tor.md)
 
 # floonet-strfry
 

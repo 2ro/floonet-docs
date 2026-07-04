@@ -4,7 +4,7 @@
 
 ## The Tor caveat first
 
-Wallet traffic arrives over [Tor](../concepts/nym.md): every wallet dials the relay's clearnet host through a Tor exit, so both the relay websockets and the name authority's HTTP lookups arrive from the same handful of shared Tor exit IPs, each of which many honest wallets sit behind. Any control keyed only on IP address will eventually rate limit, or ban, a source that dozens of users share. The rules that follow all account for this:
+Wallet traffic arrives over [Tor](../concepts/tor.md): every wallet dials the relay's clearnet host through a Tor exit, so both the relay websockets and the name authority's HTTP lookups arrive from the same handful of shared Tor exit IPs, each of which many honest wallets sit behind. Any control keyed only on IP address will eventually rate limit, or ban, a source that dozens of users share. The rules that follow all account for this:
 
 - **Relay websockets: limit per connection, not per IP.** Event-rate and subscription limits apply to each websocket independently, which is the only thing that means anything when one exit IP fronts many users.
 - **Do not put Floonet services behind IP-reputation banning** (fail2ban and friends) without exempting Tor exit IPs, or you will ban your own users in bulk.

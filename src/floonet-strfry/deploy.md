@@ -24,7 +24,7 @@ curl https://relay.yourdomain/api/v1/health                          # name auth
 
 ### Reaching the relay over Tor
 
-Nothing to deploy. Wallets reach the relay [over Tor](../concepts/nym.md) by dialing its ordinary clearnet host through a Tor exit, so the compose stack needs no transport component of its own; the relay is simply a normal public endpoint behind Caddy's TLS. The only requirement is that nothing in front of the relay blocks Tor exit IPs. See [Tor: how wallets reach a relay](../concepts/nym.md).
+Nothing to deploy. Wallets reach the relay [over Tor](../concepts/tor.md) by dialing its ordinary clearnet host through a Tor exit, so the compose stack needs no transport component of its own; the relay is simply a normal public endpoint behind Caddy's TLS. The only requirement is that nothing in front of the relay blocks Tor exit IPs. See [Tor: how wallets reach a relay](../concepts/tor.md).
 
 ## 2. apply-spec (build strfry yourself, add the Floonet layer)
 

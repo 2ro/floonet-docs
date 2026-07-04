@@ -4,7 +4,7 @@
 
 A Floonet relay is an ordinary Nostr relay with strong opinions. It stores only the handful of event kinds the Grin ecosystem actually uses, it says nothing about payments in its public metadata, it welcomes connections arriving over [Tor](https://www.torproject.org), and it ships hardened by default. Wallets like [Goblin](https://goblin.st) use Floonet relays to deliver gift-wrapped Grin payments and to resolve names like `alice`.
 
-The flagship relay, **`relay.floonet.dev`**, runs floonet-strfry and is the Goblin wallet's default money-path relay: wallets reach it [over Tor](concepts/nym.md), dialing its ordinary clearnet host through a Tor exit so the wallet's own IP never touches the payment path. The same relay also hosts the [Magick Market](https://magick.market) marketplace, so it runs the shipped default whitelist unmodified: one relay, two applications.
+The flagship relay, **`relay.floonet.dev`**, runs floonet-strfry and is the Goblin wallet's default money-path relay: wallets reach it [over Tor](concepts/tor.md), dialing its ordinary clearnet host through a Tor exit so the wallet's own IP never touches the payment path. The same relay also hosts the [Magick Market](https://magick.market) marketplace, so it runs the shipped default whitelist unmodified: one relay, two applications.
 
 ## The two packages
 
@@ -22,7 +22,7 @@ Both add the same four features, each configurable, optional, and modular:
 3. **Paid access and paid names** via [GoblinPay](floonet-strfry/paid-names.md) (Grin).
 4. **A name authority**: the NIP-05 service that maps names to keys, served under the relay's own subdomain by default so `name@relay.yourdomain` just works with no separate hostname to run.
 
-The relay needs no special transport component. Wallets reach it [over Tor](concepts/nym.md); a Floonet relay is just a normal public relay that accepts Tor connections.
+The relay needs no special transport component. Wallets reach it [over Tor](concepts/tor.md); a Floonet relay is just a normal public relay that accepts Tor connections.
 
 ## The whitelist keystone
 

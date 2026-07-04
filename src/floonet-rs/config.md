@@ -69,7 +69,7 @@ Serves the NIP-05 endpoints in-process. Name length, change cooldown, rate limit
 
 ## Reaching the relay over Tor
 
-There is nothing to configure here. Wallets reach the relay [over Tor](../concepts/nym.md) by dialing its ordinary clearnet host through a Tor exit; the relay is a normal public endpoint. Make sure whatever fronts it (TLS proxy, firewall) accepts connections from Tor exit IPs. See [Tor: how wallets reach a relay](../concepts/nym.md).
+There is nothing to configure here. Wallets reach the relay [over Tor](../concepts/tor.md) by dialing its ordinary clearnet host through a Tor exit; the relay is a normal public endpoint. Make sure whatever fronts it (TLS proxy, firewall) accepts connections from Tor exit IPs. See [Tor: how wallets reach a relay](../concepts/tor.md).
 
 ## Environment
 

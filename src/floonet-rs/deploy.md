@@ -54,4 +54,4 @@ Front it with a TLS reverse proxy that forwards `X-Real-IP` (load-bearing for ra
 - Confirm the whitelist: publish an allowed kind (persists), then a kind `1` note (dropped). The primary acceptance test.
 - Fetch the NIP-11 document and confirm it reads as `floonet-rs-relay` with a neutral description and no payment wording.
 - Add the relay to your wallet and complete a payment end to end.
-- Confirm nothing in front of the relay blocks Tor: wallets reach it [over Tor](../concepts/nym.md), dialing its clearnet host through a Tor exit.
+- Confirm nothing in front of the relay blocks Tor: wallets reach it [over Tor](../concepts/tor.md), dialing its clearnet host through a Tor exit.

@@ -30,7 +30,7 @@ The plugin and the bundled name authority read one shared environment (in compos
 
 ## Reaching the relay over Tor
 
-There is nothing to configure. Wallets reach the relay [over Tor](../concepts/nym.md) by dialing the stack's ordinary clearnet host through a Tor exit; the Caddy TLS front and the relay behind it stay a normal public endpoint. Just make sure nothing upstream blocks Tor exit IPs. See [Tor: how wallets reach a relay](../concepts/nym.md).
+There is nothing to configure. Wallets reach the relay [over Tor](../concepts/tor.md) by dialing the stack's ordinary clearnet host through a Tor exit; the Caddy TLS front and the relay behind it stay a normal public endpoint. Just make sure nothing upstream blocks Tor exit IPs. See [Tor: how wallets reach a relay](../concepts/tor.md).
 
 The full key table for both packages lives in the [config keys reference](../reference/config-keys.md).
 
