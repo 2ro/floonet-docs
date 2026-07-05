@@ -21,7 +21,11 @@ The `src/payment/goblinpay.rs` implementation covers the trait's lifecycle again
 
 ## Payment UX
 
-Users can pay a GoblinPay invoice two ways: the generated pay page, or a manual slatepack exchange. The relay does not care which; it only ever asks GoblinPay "is this invoice confirmed".
+How a user pays a GoblinPay invoice is up to the operator's GoblinPay configuration; the relay does not care which path they take, it only ever asks GoblinPay "is this invoice confirmed".
+
+- **Goblin Wallet (Nostr).** The default: the user scans the pay page's checkout code and the payment auto-receives over Nostr.
+- **Optional grin1 / Tor rail.** If the operator turns on GoblinPay's grin1 rail (`GP_GRIN1_RAIL`, off by default), the pay page also offers a Grin rail so a user can pay from any Grin wallet over Tor, not just Goblin Wallet. Goblin stays the default tab.
+- **Manual paste-back.** On either rail, a wallet that cannot deliver its slatepack automatically can paste it into the pay page and GoblinPay finishes the exchange server-side.
 
 ## Config
 
