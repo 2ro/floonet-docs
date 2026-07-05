@@ -28,23 +28,32 @@ sudo ./deploy/install.sh
 sudo gp-server setup
 ```
 
-It asks five questions, each with a default:
+It asks a few questions, each with a default. It is grin-wallet-faithful about the two things that are yours to own, your wallet password and your seed:
 
 1. the public URL customers reach this till at,
 2. your shop's website URL (used to build the webhook URL),
-3. the Grin seed: press Enter to generate a fresh till seed (shown once, write it down) or paste an existing 24 words,
-4. the currencies your shop prices in (default `usd`),
-5. an advanced yes/no for the grin1/Tor rail (default no).
+3. **your wallet password**: you choose it, entered twice and confirmed to match (hidden input; it is never auto-generated). It encrypts the seed at rest and is not recoverable, so if you forget it you restore from the seed,
+4. **the Grin seed**: press Enter to generate a fresh 24-word seed, shown once and gated behind an acknowledgement that you wrote it down (exactly like `grin-wallet init`), or paste your existing recovery phrase,
+5. **restart mode**: how the till comes back after a reboot (default **unattended**; see below),
+6. the currencies your shop prices in (default `usd`),
+7. an advanced yes/no for the grin1/Tor rail (default no).
 
 Everything else it does for you:
 
-- generates the wallet password, the API token, the admin token, and the webhook secret, so you never invent or type a secret;
+- generates the *service* secrets (the API token, the admin token, and the webhook secret) so you never invent or type a bearer token; the wallet password is the one secret you choose;
 - creates the encrypted wallet on the spot from the seed, so the seed is **consumed once** and never lives in the service environment afterwards (it exists only encrypted at rest and in your written backup);
 - probes a curated list of healthy mainnet Grin nodes and picks the first that answers, falling back automatically;
-- writes `/etc/goblinpay.env` (mode 0640) and `/etc/goblinpay/secrets/wallet_password` (mode 0400), exactly where the shipped `gp-server.service` looks (`EnvironmentFile` + `LoadCredential`);
+- writes `/etc/goblinpay.env` (mode 0640, config plus the bearer tokens) exactly where the shipped `gp-server.service` looks (`EnvironmentFile`), and, in unattended mode, `/etc/goblinpay/secrets/wallet_password` (mode 0400) where its `LoadCredential` reads it;
 - prints the webhook URL and the three values to paste into a store (GoblinPay URL, API Token, Webhook Secret) plus the private admin token.
 
-Re-running is safe: the wizard refuses to overwrite an existing wallet or config unless you pass `--reconfigure`, which keeps the existing seed and password and only rewrites the config and tokens. Other flags: `--prefix DIR` (write under a prefix instead of `/`), `--node URL` (skip the node probe), `--batch` (read scripted answers from a non-terminal stdin).
+### Restart mode: unattended (default) or manual
+
+The wizard asks how the till should restart after a reboot; press Enter for the default. Both are honest about their trade-off:
+
+- **Unattended (default).** Your chosen password is sealed to *this host* as a 0400 systemd credential, so the service auto-restarts with no human in the loop. Be clear-eyed about the trade-off: whoever fully controls this machine controls the wallet. Treat the till as a small hot wallet, hold only a working balance, and sweep to your own wallet regularly.
+- **Manual.** The password lives only in your head; nothing sensitive is written to disk. The wizard drops in a `gp-server.service.d/manual.conf` that repoints the credential to a tmpfs path (`/run/goblinpay/wallet_password`), which you populate with `systemd-ask-password` at each start. `/run` is tmpfs, so a stolen or powered-off disk holds no wallet key, at the cost of re-entering the password by hand after every reboot.
+
+Re-running is safe: the wizard refuses to overwrite an existing wallet or config unless you pass `--reconfigure`, which keeps the existing seed and password (the money) untouched and never re-prompts for them, only rewriting the config and tokens. If you run manual restart mode, re-apply it after a reconfigure. Other flags: `--prefix DIR` (write under a prefix instead of `/`), `--node URL` (skip the node probe), `--batch` (read scripted answers from a non-terminal stdin).
 
 Then start the till:
 
@@ -56,7 +65,7 @@ The env-var configuration is the advanced path for operators who want to configu
 
 ## The seed, once
 
-GoblinPay is init-once. `GP_MNEMONIC` (or the seed you paste into the wizard) is used a single time to create the encrypted wallet; after the encrypted seed exists at rest under `GP_DATA_DIR` (mode 0600), the wallet opens with `GP_WALLET_PASSWORD` alone. Steady state is "password in, seed out": if `GP_MNEMONIC` is still set the server only checks it against the seed at rest and logs a notice to remove it. Prefer file-based delivery (`GP_MNEMONIC_FILE`, `GP_WALLET_PASSWORD_FILE`, mode 0400) with systemd `LoadCredential` or docker `/run/secrets` so secrets never sit in the environment. The Nostr identity (nsec) is a deliberately separate secret from the Grin mnemonic; a random one is generated on first start if unset and persisted NIP-49 encrypted under `GP_DATA_DIR/nostr/`.
+GoblinPay is init-once. `GP_MNEMONIC` (or the seed you paste into the wizard) is used a single time to create the encrypted wallet; after the encrypted seed exists at rest under `GP_DATA_DIR` (mode 0600), the wallet opens with `GP_WALLET_PASSWORD` alone. Steady state is "password in, seed out": if `GP_MNEMONIC` is still set the server only checks it against the seed at rest and logs a notice to remove it. Prefer file-based delivery (`GP_MNEMONIC_FILE`, `GP_WALLET_PASSWORD_FILE`, mode 0400) with systemd `LoadCredential` or docker `/run/secrets` so secrets never sit in the environment. You choose `GP_WALLET_PASSWORD` yourself (the wizard prompts for it twice and confirms the match; it is never auto-generated); how it reaches the service on restart is the [restart-mode](#restart-mode-unattended-default-or-manual) choice above, sealed to the host for unattended auto-restart or re-entered by hand in manual mode. The Nostr identity (nsec) is a deliberately separate secret from the Grin mnemonic; a random one is generated on first start if unset and persisted NIP-49 encrypted under `GP_DATA_DIR/nostr/`.
 
 ## Where to go next
 

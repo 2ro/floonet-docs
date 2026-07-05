@@ -14,7 +14,7 @@ sudo ./deploy/install.sh     # builds + installs the binary and unit, then offer
 sudo gp-server setup
 ```
 
-The [wizard](README.md#setup-the-wizard-recommended-path) asks a few questions (all with defaults) and does the rest: it makes your till wallet, generates every secret, picks a healthy Grin node, and writes the config. Two answers matter for WooCommerce:
+The [wizard](README.md#setup-the-wizard-recommended-path) asks a few questions (all with defaults) and does the rest: you choose your wallet password and write down your seed, and it generates the service tokens, makes your till wallet, picks a healthy Grin node, and writes the config. Two answers matter for WooCommerce:
 
 - **Your till URL**: either a subdomain like `https://pay.myshop.com`, or a path on your existing shop domain like `https://myshop.com/pay` if you would rather not add a DNS record (see [Hosting](hosting.md)).
 - **Your shop URL**: `https://myshop.com`. The wizard turns this into your webhook URL for you.
