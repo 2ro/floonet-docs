@@ -8,7 +8,8 @@ Read by the write-policy plugin and the bundled name authority (in compose, the 
 
 | Key | Default | Meaning |
 | --- | --- | --- |
-| `FLOONET_ALLOWED_KINDS` | the [Goblin + Magick Market set](allowed-kinds.md) (23 kinds) | The [whitelist](../concepts/whitelist.md). Default deny; everything not listed is dropped. `.env.example` pins the wallet-only core. |
+| `FLOONET_ALLOWED_KINDS` | the [Goblin + Magick Market set](allowed-kinds.md) (24 kinds) | The [whitelist](../concepts/whitelist.md). Default deny; everything not listed is dropped. `.env.example` pins the wallet-only core. |
+| `FLOONET_AUTHORIZED_AUTHORS` | empty (closed) | Comma-separated pubkeys (hex or npub) allowed to publish the [author-locked public-note kinds](allowed-kinds.md#public-notes-are-author-locked) `1` and `30023`. Empty means both are rejected for everyone. May also live in a `floonet.env` file next to the plugin (`FLOONET_ENV_FILE`); `touch` the plugin to reload with no restart. |
 | `FLOONET_REQUIRE_AUTH` | `false` | Reject writes unless the connection completed NIP-42 AUTH. |
 | `FLOONET_PAY_MODE` | `off` | `off`, `name` (pay to claim a name), or `write` (pay to publish). |
 | `FLOONET_NAME_PRICE_GRIN` | unset | Price of a name in GRIN. Required when `FLOONET_PAY_MODE=name`. |
@@ -36,8 +37,9 @@ There is no transport key to set: wallets reach the relay [over Tor](../concepts
 | --- | --- | --- |
 | `info.name` | `floonet-rs-relay` | NIP-11 name, payment-neutral. |
 | `info.description` | neutral Floonet wording | NIP-11 description, same rule. |
-| `limits.event_kind_allowlist` | the same [23-kind set](allowed-kinds.md) | The whitelist, enforced in [admission](../floonet-rs/admission.md). |
+| `limits.event_kind_allowlist` | the same [24-kind set](allowed-kinds.md) | The whitelist, enforced in [admission](../floonet-rs/admission.md). |
 | `limits.max_event_bytes` | shipped default | Keep large enough for gift-wrapped slatepacks. |
+| `authorization.public_note_authors` | unset (closed) | Pubkeys (hex or npub) allowed to publish the [author-locked public-note kinds](allowed-kinds.md#public-notes-are-author-locked) `1` and `30023`. Unset means both are rejected for everyone. |
 | `authorization.nip42_auth` | `false` | Require AUTH before writes. |
 | `authorization.nip42_dms` | `false` | Require AUTH to read your gift wraps. |
 | `authorization.pubkey_whitelist` | unset | Restrict writes to these pubkeys. |

@@ -47,6 +47,6 @@ Build strfry per its upstream docs (`make setup-golpe && make`), then:
 
 ## After deploying
 
-- Confirm the whitelist: publish an allowed kind (it persists) and a kind `1` note (it is dropped). This is the primary acceptance test.
+- Confirm the policy: publish an allowed kind (it persists) and a kind `1` note from an unauthorized key (it is dropped, since public notes are author-locked and closed by default). This is the primary acceptance test.
 - Check the NIP-11 document reads as a neutral Floonet relay with no payment wording.
 - Add the relay to your wallet and send yourself a payment end to end.

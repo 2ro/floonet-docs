@@ -18,9 +18,10 @@ pub trait EventAdmissionPolicy {
 The configured policies run in order; the first rejection wins:
 
 1. **Kind whitelist** (`event_kind_allowlist`): the keystone, always first, cannot be disabled.
-2. **Auth policy**: NIP-42 requirement and `pubkey_whitelist` membership, when enabled.
-3. **Paid gate**: confirmed GoblinPay payment for the authed pubkey, when `FLOONET_PAY_MODE=write`.
-4. **Name authority policy**: checks that depend on name state.
+2. **Public-note lock** (`authorization.public_note_authors`): kinds `1` and `30023` are accepted only from the configured authors (hex or npub); closed by default, so with no authors set both kinds are rejected for everyone. Every other kind is unaffected.
+3. **Auth policy**: NIP-42 requirement and `pubkey_whitelist` membership, when enabled.
+4. **Paid gate**: confirmed GoblinPay payment for the authed pubkey, when `FLOONET_PAY_MODE=write`.
+5. **Name authority policy**: checks that depend on name state.
 
 `server.rs` calls exactly one function; every policy decision, log line, and metric hangs off that one seam.
 

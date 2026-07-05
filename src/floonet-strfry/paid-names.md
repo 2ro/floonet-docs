@@ -8,8 +8,8 @@
 
 1. A user asks to register `alice`.
 2. With `FLOONET_PAY_MODE=name`, the authority quotes `FLOONET_NAME_PRICE_GRIN` and creates a GoblinPay invoice.
-3. The user pays in GRIN: via the GoblinPay pay page, a manual slatepack exchange, or a `grin1` address if the operator enabled GoblinPay's Tor method.
-4. GoblinPay confirms the payment on chain (payment proof included).
+3. The user pays in GRIN: via the GoblinPay pay page or a manual slatepack exchange.
+4. GoblinPay confirms the payment on chain (payment proof included). "Confirmed" is GoblinPay's house standard of `GP_CONFIRMATIONS` on-chain confirmations, default 10.
 5. The authority sees the confirmed payment and completes the registration. Results are cached with a TTL, so checks are cheap.
 
 Until step 5, registration is refused. Change the price in config and the quote changes; no code involved.

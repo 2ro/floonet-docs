@@ -29,7 +29,7 @@ Restart, and name registration on your authority now quotes 5 GRIN and refuses t
 
 ## What your users experience
 
-A user claiming a name from a wallet gets sent to your GoblinPay pay page (or pays by manual slatepack, or a `grin1` address if you enabled the Tor method). Once the payment confirms, the name is theirs: one name per key, standard NIP-05, resolvable everywhere.
+A user claiming a name from a wallet gets sent to your GoblinPay pay page (or pays by manual slatepack). Once the payment confirms (GoblinPay's house standard of 10 on-chain confirmations), the name is theirs: one name per key, standard NIP-05, resolvable everywhere.
 
 A note worth passing to your users: one wallet can hold multiple Nostr identities. If they pay for a name, the name belongs to the npub that registered it; loading the same wallet and switching to that npub keeps the name.
 

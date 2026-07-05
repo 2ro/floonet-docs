@@ -21,7 +21,9 @@ The core of the list matches what the Goblin wallet actually publishes and reads
 | `10050` | 17 | DM relay lists: where to deliver private messages |
 | `27235` | 98 | HTTP auth events, used to register names with the name authority |
 
-The shipped default in both packages is this wallet core **plus** the [Magick Market](https://magick.market) marketplace set (`1`, `7`, `14`, `16`, `17`, `1111`, `10000`, `30000`, `30003`, `30078`, `30402`, `30405`, `30406`, `31990`) and `24133` (Nostr Connect wallet login): 23 kinds in total. See the [allowed kinds reference](../reference/allowed-kinds.md) for the full table with the reasoning per kind.
+The shipped default in both packages is this wallet core **plus** the [Magick Market](https://magick.market) marketplace set (`1`, `7`, `14`, `16`, `17`, `1111`, `10000`, `30000`, `30003`, `30023`, `30078`, `30402`, `30405`, `30406`, `31990`) and `24133` (Nostr Connect wallet login): 24 kinds in total. See the [allowed kinds reference](../reference/allowed-kinds.md) for the full table with the reasoning per kind.
+
+Two of those kinds, `1` (text notes) and `30023` (long-form articles), carry a second gate on top of the whitelist: they are accepted **only** from an operator-chosen set of authorized authors, and are closed by default. This keeps public-note spam off a payment relay while still letting the operator (or an official news key) post. See [Public notes are author-locked](../reference/allowed-kinds.md#public-notes-are-author-locked).
 
 ## The list in production: `relay.floonet.dev`
 

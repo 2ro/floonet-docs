@@ -15,8 +15,9 @@ strfry's intended extension point is the write policy (`relay.writePolicy.plugin
 The Floonet plugin is a small program structured as a chain of pluggable checks, each with its own config:
 
 1. **Kind whitelist** (the keystone). `kind` must be in `FLOONET_ALLOWED_KINDS` (default: the [Goblin + Magick Market set](../reference/allowed-kinds.md)), or the event is rejected. This check runs first and cannot be disabled. It applies to every ingest path, including events pulled in via negentropy sync.
-2. **Auth**, when `FLOONET_REQUIRE_AUTH=true`: the connection must have completed NIP-42 AUTH (also enable `relay.auth` in `strfry.conf`).
-3. **Paid gate**, when `FLOONET_PAY_MODE=write`: the authed pubkey must hold a confirmed payment grant, checked against the bundled name authority (`FLOONET_AUTHORITY_URL`, which talks to GoblinPay). Results are cached for `FLOONET_PAID_CACHE_SECS` (default 60) so the plugin does not call out on every event.
+2. **Public-note lock.** The two public-note kinds, `1` (text notes) and `30023` (long-form articles), are accepted **only** when the event's author is in `FLOONET_AUTHORIZED_AUTHORS` (hex or npub, comma-separated). This list is closed by default: with no authors configured, both kinds are rejected for everyone, so a payment relay never fills with public-note spam. Every other kind is unaffected. The author list can also live in a `floonet.env` KEY=VALUE file next to the plugin (`FLOONET_ENV_FILE` overrides the path); real environment variables win, and strfry reloads the plugin on mtime change, so `touch`ing it after an edit applies new authors with no restart.
+3. **Auth**, when `FLOONET_REQUIRE_AUTH=true`: the connection must have completed NIP-42 AUTH (also enable `relay.auth` in `strfry.conf`).
+4. **Paid gate**, when `FLOONET_PAY_MODE=write`: the authed pubkey must hold a confirmed payment grant, checked against the bundled name authority (`FLOONET_AUTHORITY_URL`, which talks to GoblinPay). Results are cached for `FLOONET_PAID_CACHE_SECS` (default 60) so the plugin does not call out on every event.
 
 **Fail-closed** is the invariant across all checks: malformed input, an unreachable config, or an errored check means reject, never accept. The first rejection wins.
 

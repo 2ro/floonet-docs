@@ -39,7 +39,9 @@ The single most important design decision in Floonet is **default deny**. A Floo
 | `10050` | DM relay list (NIP-17) |
 | `27235` | HTTP auth (NIP-98): used by the name authority |
 
-The shipped default in both packages is this wallet core plus the [Magick Market](https://magick.market) marketplace kinds (listings, orders, receipts) and Nostr Connect login: 23 kinds in total, and exactly the list running in production on `relay.floonet.dev`; the [allowed kinds reference](reference/allowed-kinds.md) has the full table. Everything else, long-form content, zaps, bot spam, is rejected. This keeps a Floonet relay lean, cheap to run, and uninteresting to abuse. The list is one editable config value in both packages, so it can grow (or shrink to the wallet core) without code changes. See [The whitelist: default deny](concepts/whitelist.md).
+The shipped default in both packages is this wallet core plus the [Magick Market](https://magick.market) marketplace kinds (listings, orders, receipts) and Nostr Connect login: 24 kinds in total, and exactly the list running in production on `relay.floonet.dev`; the [allowed kinds reference](reference/allowed-kinds.md) has the full table. Everything else, zaps and bot spam, is rejected. This keeps a Floonet relay lean, cheap to run, and uninteresting to abuse. The list is one editable config value in both packages, so it can grow (or shrink to the wallet core) without code changes. See [The whitelist: default deny](concepts/whitelist.md).
+
+Public notes get one extra gate on top. The two public-note kinds, `1` (text notes) and `30023` (long-form articles), are accepted **only** from an operator-chosen set of authorized authors, and are closed by default. That is the self-hoster guarantee: running a Floonet relay means no public-note spam, and you decide exactly who can post notes and articles (for example an official news key), while profiles, gift wraps, marketplace events, and DM and relay lists keep flowing for everyone. See [Public notes are author-locked](reference/allowed-kinds.md#public-notes-are-author-locked).
 
 ## How to read these docs
 

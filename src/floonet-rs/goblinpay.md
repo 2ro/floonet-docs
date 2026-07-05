@@ -11,7 +11,7 @@ Upstream's `pay_to_relay` model (`nostr-rs-relay/src/payment/mod.rs`) defines a 
 The `src/payment/goblinpay.rs` implementation covers the trait's lifecycle against a GoblinPay server:
 
 1. **Create invoice.** Ask GoblinPay for an invoice for the configured amount (`FLOONET_NAME_PRICE_GRIN` for names, or the write-access price). GoblinPay returns the payment details the client needs, including the pay-page URL.
-2. **Confirm.** Poll GoblinPay's REST API for payment status. Confirmation is on-chain, with a Grin payment proof, so a confirmed invoice means real money moved.
+2. **Confirm.** Poll GoblinPay's REST API for payment status. Confirmation is on-chain, with a Grin payment proof, so a confirmed invoice means real money moved. An invoice moves `open` -> `paid` (the payment landed) -> `confirmed` (its kernel reached GoblinPay's house standard of `GP_CONFIRMATIONS` on-chain confirmations, default 10); the paid gate and name registration only act on `confirmed`. The status API exposes both `confirmations` and `confirmations_required`.
 3. **Record.** Mark the invoice paid; the [admission module](admission.md)'s paid gate and the [name authority](name-authority.md)'s registration path both read that record. Lookups are cached with a TTL.
 
 ## Enforcement points
@@ -21,7 +21,7 @@ The `src/payment/goblinpay.rs` implementation covers the trait's lifecycle again
 
 ## Payment UX
 
-Users can pay a GoblinPay invoice three ways, depending on what the operator enabled in GoblinPay: the generated pay page, a manual slatepack exchange, or a `grin1` address (Tor method). The relay does not care which; it only ever asks GoblinPay "is this invoice confirmed".
+Users can pay a GoblinPay invoice two ways: the generated pay page, or a manual slatepack exchange. The relay does not care which; it only ever asks GoblinPay "is this invoice confirmed".
 
 ## Config
 
