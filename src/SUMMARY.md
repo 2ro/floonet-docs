@@ -27,6 +27,14 @@
 - [Name authority](floonet-rs/name-authority.md)
 - [The GoblinPay processor](floonet-rs/goblinpay.md)
 
+# GoblinPay
+
+- [Take Grin payments](goblinpay/README.md)
+- [WooCommerce quick start](goblinpay/woocommerce.md)
+- [Medusa quick start](goblinpay/medusa.md)
+- [API integration](goblinpay/api.md)
+- [Hosting](goblinpay/hosting.md)
+
 # Operate
 
 - [Hardening](operate/hardening.md)
