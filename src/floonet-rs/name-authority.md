@@ -2,6 +2,16 @@
 
 > **Summary.** floonet-rs builds the name authority in as a module: the same endpoints, the same rules as the bundled strfry authority, served in-process from the relay binary, with its tables in the relay database via a normal migration.
 
+## Enabled or not
+
+The name service is bundled but optional, switched in setup by one key:
+
+- `[name_authority] enabled = true` serves it in-process on the relay's own listener.
+- `enabled = false` (the shipped default) runs the relay with **no name service** at all: pure event ingest, no NIP-05 surface.
+- Operators who prefer a separate authority process can run one as a sibling instead (the same code, standalone). Both arrangements are supported.
+
+Name transfers (the non-custodial name marketplace) currently ship in the [bundled strfry authority](../floonet-strfry/name-authority.md#name-transfers), not in the floonet-rs module.
+
 ## Shape
 
 - **A module, not a sidecar.** `src/name_authority.rs` serves the NIP-05 and registration endpoints from the same binary and the same port as the relay's HTTP surface. One process to run, one unit to monitor. (Operators who prefer a separate authority process can run one as a sibling instead; both arrangements are supported.) Because it is the same listener, `name@relay.yourdomain` resolves automatically; there is no split-hostname deployment to opt back into, unlike floonet-strfry's [Docker Compose vs. split-nginx](../floonet-strfry/name-authority.md#co-located-on-the-relays-domain) choice.

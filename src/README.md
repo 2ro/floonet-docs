@@ -20,7 +20,7 @@ Both add the same four features, each configurable, optional, and modular:
 1. **An event-kind whitelist** (the keystone: default deny, see below).
 2. **Authentication**: NIP-42 plus pubkey whitelists.
 3. **Paid access and paid names** via [GoblinPay](floonet-strfry/paid-names.md) (Grin).
-4. **A name authority**: the NIP-05 service that maps names to keys, served under the relay's own subdomain by default so `name@relay.yourdomain` just works with no separate hostname to run.
+4. **A name authority**: the bundled NIP-05 service that maps names to keys, served under the relay's own subdomain by default so `name@relay.yourdomain` just works with no separate hostname to run. Chosen in setup, it can run alongside the relay, standalone, or not at all, and it supersedes the older standalone [goblin-nip05d](concepts/name-authority.md).
 
 The relay needs no special transport component. Wallets reach it [over Tor](concepts/tor.md); a Floonet relay is just a normal public relay that accepts Tor connections.
 

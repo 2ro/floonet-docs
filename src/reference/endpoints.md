@@ -24,6 +24,17 @@ All endpoints are served under the relay's own domain by default (co-located, se
 | `GET /api/v1/name/{name}` | none | Availability: is this name free, reserved, or taken |
 | `GET /api/v1/health` | none | Health probe for monitoring |
 
+## Name transfers (optional, strfry authority only)
+
+These routes exist **only** when the bundled strfry authority has transfers turned on (`FLOONET_TRANSFERS=true`); otherwise they 404. Transfers are off by default and strictly non-custodial. See [The bundled name authority](../floonet-strfry/name-authority.md#name-transfers).
+
+| Endpoint | Auth | Purpose |
+| --- | --- | --- |
+| `POST /api/v1/transfer/offer` | NIP-98 (seller) | Lodge a signed kind-3402 sale offer |
+| `GET /api/v1/transfer/offer/{id}` | none | Read an offer and its status |
+| `DELETE /api/v1/transfer/offer/{id}` | NIP-98 (seller) | Revoke a live offer |
+| `POST /api/v1/transfer/claim` | NIP-98 (buyer) | Claim the name with a Grin payment proof |
+
 ## Example
 
 ```bash

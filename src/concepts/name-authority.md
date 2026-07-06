@@ -1,14 +1,24 @@
 # The name authority
 
-> **Summary.** A name authority maps human names to Nostr keys via NIP-05, so people pay `alice` instead of a 64-character key. Both Floonet packages ship one: registration is authenticated with NIP-98, names follow strict validation rules, each key holds at most one name, and operators may charge GRIN for names.
+> **Summary.** A name authority maps human names to Nostr keys via NIP-05, so people pay `alice` instead of a 64-character key. Both Floonet packages **bundle** one: registration is authenticated with NIP-98, names follow strict validation rules, each key holds at most one name, and operators may charge GRIN for names. The bundled service is selected in the relay's setup and can run alongside the relay, as a standalone service, or not at all.
 
 ## Motivation
 
 Keys are unusable as addresses for humans. NIP-05 solves this with a well-known JSON file: `https://example.org/.well-known/nostr.json?name=alice` returns alice's pubkey. A Floonet name authority is the small service that maintains that file, plus an API to claim and release names. Anyone can run one, on any Floonet relay, under any domain.
 
+## Enabling or disabling the bundled name service
+
+The name service ships in the box; whether it runs is the operator's choice, made once at setup. There are three arrangements:
+
+- **Alongside the relay (the default).** floonet-strfry brings the authority up as its own Compose `authority` service, wired to the relay's domain; floonet-rs serves it in-process from the relay binary when `[name_authority] enabled = true`.
+- **Standalone.** Run the authority on its own: floonet-strfry's `name-authority/` crate builds and runs as an independent binary (with its own SQLite), and floonet-rs operators who want a separate process can run one as a sibling. This is also what the older goblin-nip05d edition was (see below).
+- **Not at all.** A relay with no name service. In floonet-rs, leave `[name_authority] enabled = false` (the shipped default) and the relay runs pure event ingest with no NIP-05 surface. In floonet-strfry, drop the `authority` service from the Compose stack.
+
+**First-run wizard.** floonet-strfry's authority binary has an interactive first-run setup: run it by hand with nothing configured, on a terminal, and it prompts for the essentials (names domain, HTTP bind address, data directory, pay mode and price, and whether to enable name transfers), writes a conventional env file, and starts up. It is skipped entirely when `FLOONET_DOMAIN` is already set or when stdin is not a TTY, so Docker Compose and systemd deploys stay fully headless. See [The bundled name authority](../floonet-strfry/name-authority.md).
+
 ## The rules
 
-The rules are inherited from the goblin-nip05d reference implementation and are the same in both packages:
+The rules originate in the standalone goblin-nip05d reference (the older minimal, single-purpose edition, now superseded by this bundled service) and are the same in both packages:
 
 - **Validation.** Names are lowercase `[a-z0-9._-]`, must start and end alphanumeric, and are capped at **20 characters**.
 - **One active name per key.** Enforced with a partial unique index in the database. Claiming a new name releases the old one.
@@ -37,6 +47,10 @@ See the [endpoints reference](../reference/endpoints.md).
 ## Free or paid
 
 By default names are free. An operator can instead require a confirmed GoblinPay payment of `FLOONET_NAME_PRICE_GRIN` before a registration succeeds. The price is plain config; see [Charge GRIN for your relay](../operate/charge-grin.md).
+
+## Name transfers (the name marketplace)
+
+The bundled strfry authority can also let one holder sell a name to another: a seller lodges a signed offer, a buyer pays in GRIN and claims it, and the name row is reassigned from the seller's key to the buyer's. This is **off by default** (`FLOONET_TRANSFERS`, disabled unless the operator turns it on) and, when on, is **strictly non-custodial**: the authority holds no funds and has zero GoblinPay involvement. It only verifies a seller-signed offer plus an on-chain Grin payment proof through a read-only Grin node foreign API, then moves the name. Keys never move; only which pubkey owns the name changes. See [The bundled name authority](../floonet-strfry/name-authority.md#name-transfers).
 
 ## A note for wallet users
 

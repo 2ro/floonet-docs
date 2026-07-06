@@ -23,7 +23,7 @@ Keep it [payment-neutral](../concepts/nip11.md). Operators may customize; the de
 # reference for what each one is.
 event_kind_allowlist = [
     0, 1, 3, 5, 7, 13, 14, 16, 17, 1059, 1111, 10000, 10002, 10050, 24133,
-    27235, 30000, 30003, 30078, 30402, 30405, 30406, 31990,
+    27235, 30000, 30003, 30023, 30078, 30402, 30405, 30406, 31990,
 ]
 # Default 262144: large enough for gift-wrapped slatepacks. Do not shrink.
 #max_event_bytes = 262144

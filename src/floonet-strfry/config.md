@@ -20,7 +20,7 @@ The plugin and the bundled name authority read one shared environment (in compos
 
 | Key | Default | Meaning |
 | --- | --- | --- |
-| `FLOONET_ALLOWED_KINDS` | the [Goblin + Magick Market set](../reference/allowed-kinds.md) (23 kinds) | The [whitelist](../concepts/whitelist.md); default deny. `.env.example` pins the wallet-only core (`0,3,5,13,1059,10002,10050,27235`) as a conservative starting point |
+| `FLOONET_ALLOWED_KINDS` | the [Goblin + Magick Market set](../reference/allowed-kinds.md) (24 kinds) | The [whitelist](../concepts/whitelist.md); default deny. `.env.example` pins the wallet-only core (`0,3,5,13,1059,10002,10050,27235`) as a conservative starting point |
 | `FLOONET_REQUIRE_AUTH` | `false` | Reject events unless the connection completed NIP-42 AUTH (also enable `relay.auth` in `strfry.conf`) |
 | `FLOONET_PAY_MODE` | `off` | `off`, `name` (pay to claim a name), or `write` (pay to write) |
 | `FLOONET_NAME_PRICE_GRIN` | unset | Price of a name in GRIN when `FLOONET_PAY_MODE=name` |

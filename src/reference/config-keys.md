@@ -16,6 +16,8 @@ Read by the write-policy plugin and the bundled name authority (in compose, the 
 | `GOBLINPAY_URL` | unset | The operator's GoblinPay server. Required for any paid mode. |
 | `GOBLINPAY_TOKEN` | unset | GoblinPay API token. Secret: environment or 0400 file only. |
 | `FLOONET_PAID_CACHE_SECS` | `60` | TTL for the plugin's cached paid-status lookups. |
+| `FLOONET_TRANSFERS` | `false` | Turn on the authority's non-custodial [name marketplace](../floonet-strfry/name-authority.md#name-transfers). Off by default; when on, `FLOONET_GRIN_NODE_URL` is required. Authority only. |
+| `FLOONET_GRIN_NODE_URL` | unset | Read-only Grin node foreign API used to confirm transfer payments. Required when `FLOONET_TRANSFERS=true`. |
 
 ## floonet-strfry (`strfry.conf`)
 
