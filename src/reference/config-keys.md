@@ -31,7 +31,7 @@ Read by the write-policy plugin and the bundled name authority (in compose, the 
 
 The read side may also set `filterValidation.allowedKinds` to mirror the whitelist on subscriptions.
 
-There is no transport key to set: wallets reach the relay [over Tor](../concepts/tor.md) by dialing its clearnet host through a Tor exit, so the relay needs no onion or mixnet component. Just keep Tor exit IPs unblocked.
+There is no transport key to set: wallets reach the relay [over Tor](../concepts/tor.md) by dialing its clearnet host through a Tor exit, so the relay needs no onion or special transport component. Just keep Tor exit IPs unblocked.
 
 ## floonet-rs (`config.toml`)
 
