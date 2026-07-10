@@ -19,6 +19,16 @@ A Floonet relay storing a gift wrap sees:
 
 It cannot see the sender, the content, the amount, or whether the envelope is a payment, a message, or anything else. This is why [NIP-11 metadata stays payment-neutral](nip11.md): the relay genuinely does not know.
 
+## Retention: a payment cannot be deleted out from under you
+
+A gift wrap is often a payment, and the recipient may be offline for hours, so the relay must hold it until they fetch it. Both packages enforce that at admission, so a malformed or malicious publish cannot arrange for a payment to vanish early. On any kind `1059` event, the relay rejects, fail-closed:
+
+- **A NIP-40 `expiration` tag.** It is the only thing that would let the relay auto-delete an event on a timer, so a gift wrap is never allowed to carry one. **An accepted payment gift wrap stays until the recipient reads it.**
+- **A missing or malformed recipient.** Exactly one `p` tag is required, in strict lowercase 32-byte hex. A mixed-case or absent recipient would pass storage but never route to a wallet, so it is refused rather than silently swallowed.
+- **Any extra tag.** A real gift wrap carries only that one `p` tag; anything else is refused, so a relay-sized event cannot be padded with junk.
+
+Operators running the published [floonet-strfry](../floonet-strfry/write-policy.md) or [floonet-rs](../floonet-rs/admission.md) configs get these guards automatically; self-hosters inherit them from the repos with nothing to configure.
+
 ## One operational consequence: event size
 
 Gift-wrapped slatepacks are much larger than typical Nostr notes. Both packages ship with a maximum event size large enough for wrapped slatepacks:

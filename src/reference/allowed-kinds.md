@@ -14,6 +14,7 @@ The shipped default whitelist, in full. It is identical in both packages (`DEFAU
 | `10002` | [65](https://nips.nostr.com/65) | Relay list | Where a user can be found |
 | `10050` | [17](https://nips.nostr.com/17) | DM relay list | Where to deliver a user's private messages |
 | `24133` | [46](https://nips.nostr.com/46) | Nostr Connect | Remote signing (ephemeral); wallet login |
+| `24140` | Goblin | Authorize Sessions | Ephemeral session channel for the Authorize Sessions feature |
 | `27235` | [98](https://nips.nostr.com/98) | HTTP auth | Authenticates name-authority registration requests |
 
 ## Magick Market marketplace kinds

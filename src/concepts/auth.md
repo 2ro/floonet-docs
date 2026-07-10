@@ -12,6 +12,8 @@ NIP-42 lets a relay learn, cryptographically, which key is on the other end of a
 
 After that, the connection has an authenticated pubkey attached, and every policy decision can use it.
 
+Goblin wallets authenticate **opportunistically and for free**: when a relay issues an AUTH challenge, the wallet answers it in the background with no cost and no user prompt. NIP-42 AUTH is a signature, not a payment, so this is unrelated to any [paid gate](../floonet-strfry/paid-names.md). It means a relay can gate reads to a message's recipient (matching the authed key against the gift wrap's `p` tag) and a Goblin wallet just works, while a relay that never challenges sees no change.
+
 ## What each package does with it
 
 - **floonet-strfry**: NIP-42 is native to strfry (`relay.auth.enabled` and `relay.auth.serviceUrl` in `strfry.conf`; the kind `22242` challenge validation lives in upstream `RelayIngester.cpp`). The [write-policy plugin](../floonet-strfry/write-policy.md) receives the `authed` pubkey with every event, so auth checks, whitelist checks, and paid checks all live in one place: the plugin.
